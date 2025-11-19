@@ -4,3 +4,22 @@
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Subtle background texture to give depth like modern SaaS sites */
+body {
+  background:
+    radial-gradient(60rem 60rem at 50% -10%, rgba(0,0,0,0.04), transparent 60%) no-repeat,
+    #ffffff;
+}
+
+/* Subtle squared grid background for hero section */
+.grid-bg {
+  background-image:
+    linear-gradient(to right, rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
