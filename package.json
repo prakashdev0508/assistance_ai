@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "next build",
+    "postinstall": "prisma generate --schema=./prisma/schema.prisma",
+    "build": "prisma generate --schema=./prisma/schema.prisma && next build",
     "check": "next lint && tsc --noEmit",
     "dev": "next dev --turbo --port 3003",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,mdx}\" --cache",

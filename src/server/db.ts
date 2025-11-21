@@ -1,6 +1,5 @@
 import { env } from "~/env";
-import pkg from "@prisma/client"; // <-- FIXED
-const { PrismaClient } = pkg;     // <-- EXTRACT FROM DEFAULT EXPORT
+import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 
 const adapter = new PrismaPg({
