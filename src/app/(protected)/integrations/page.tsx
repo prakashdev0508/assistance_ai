@@ -23,7 +23,7 @@ const integrations = [
     status: "Not connected",
     action: "Connect",
     icon: (
-      <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-[#ea4335] via-[#fbbc05] to-[#34a853] text-white">
+      <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-linear-to-br from-[#ea4335] via-[#fbbc05] to-[#34a853] text-white">
         <svg viewBox="0 0 24 24" className="h-6 w-6" aria-hidden="true">
           <path
             d="M3 7l9 6 9-6v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z"

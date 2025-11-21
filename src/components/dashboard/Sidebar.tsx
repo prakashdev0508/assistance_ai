@@ -82,11 +82,11 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden h-full w-20 shrink-0 flex-col justify-between bg-gradient-to-b from-[#0b1b40] via-[#0c2f78] to-[#0d47a1] px-2 py-6 text-white shadow-[0_25px_60px_-30px_rgba(9,26,75,0.9)] md:flex">
+    <aside className="hidden h-full w-20 shrink-0 flex-col justify-between bg-gray-100 px-2 py-6 md:flex">
       <div className="flex flex-col items-center gap-8">
         <Link
           href="/"
-          className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/20 text-white"
+          className="flex h-10 w-10 items-center justify-center rounded-2xl bg-black/5 text-black/80"
         >
           <span className="text-lg font-semibold">Æ</span>
         </Link>
@@ -97,16 +97,15 @@ export default function Sidebar() {
               <div key={item.href} className="group relative">
                 <Link
                   href={item.href}
-                  className={`flex h-11 w-11 items-center justify-center rounded-2xl transition ${
-                    active
-                      ? "bg-white text-[#0b1b40] shadow-[0_12px_30px_-12px_rgba(0,0,0,0.8)]"
-                      : "bg-white/10 text-white/80 hover:bg-white/20"
-                  }`}
+                  className={`flex h-11 w-11 items-center justify-center rounded-2xl transition ${active
+                      ? "bg-black text-white shadow-[0_12px_30px_-12px_rgba(0,0,0,0.3)]"
+                      : "bg-white text-black/60 hover:bg-black/5 hover:text-black/80"
+                    }`}
                   aria-label={item.label}
                 >
                   {item.icon}
                 </Link>
-                <span className="pointer-events-none absolute left-[60px] top-1/2 -translate-y-1/2 rounded-full bg-white px-3 py-1 text-xs font-medium text-[#0b1b40] opacity-0 shadow group-hover:opacity-100">
+                <span className="pointer-events-none absolute left-[60px] top-1/2 -translate-y-1/2 rounded-full bg-black px-3 py-1 text-xs font-medium text-white opacity-0 shadow group-hover:opacity-100">
                   {item.label}
                 </span>
               </div>
@@ -115,7 +114,7 @@ export default function Sidebar() {
         </nav>
       </div>
       <div className="flex flex-col items-center gap-4">
-        <button className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/10 text-white/80 hover:bg-white/20">
+        <button className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white text-black/60 hover:bg-black/5 hover:text-black/80">
           <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden="true">
             <path
               d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm7 0a7 7 0 0 1-14 0"
@@ -125,7 +124,7 @@ export default function Sidebar() {
             />
           </svg>
         </button>
-        <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white text-[#0b1b40]">
+        <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-black text-white">
           <span className="text-sm font-semibold">AK</span>
         </div>
       </div>

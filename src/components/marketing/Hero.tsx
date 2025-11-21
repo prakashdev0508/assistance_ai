@@ -10,9 +10,9 @@ export default function Hero() {
           <div className="mb-6 flex items-center justify-center">
             <div className="inline-flex items-center gap-3 rounded-full border border-black/10 bg-white px-2 py-1 pr-2 text-xs text-black/80 shadow-[0_10px_40px_-20px_rgba(0,0,0,0.5)]">
               <div className="flex -space-x-2">
-                <span className="h-6 w-6 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 ring-2 ring-white" />
-                <span className="h-6 w-6 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 ring-2 ring-white" />
-                <span className="h-6 w-6 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 ring-2 ring-white" />
+                <span className="h-6 w-6 rounded-full bg-linear-to-br from-purple-500 to-pink-500 ring-2 ring-white" />
+                <span className="h-6 w-6 rounded-full bg-linear-to-br from-blue-500 to-cyan-500 ring-2 ring-white" />
+                <span className="h-6 w-6 rounded-full bg-linear-to-br from-amber-400 to-orange-500 ring-2 ring-white" />
               </div>
               <span className="pl-1 pr-2 text-black/70">Join 3k+ members</span>
               <Link
@@ -34,13 +34,13 @@ export default function Hero() {
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Link
-              href="#"
+              href="/signin"
               className="w-full rounded-full bg-[linear-gradient(180deg,#1e90ff_0%,#1068ff_100%)] px-6 py-3.5 text-center text-sm font-semibold text-white shadow-[0_18px_50px_-18px_rgba(16,104,255,0.8)] ring-1 ring-blue-500/40 hover:brightness-110 sm:w-auto"
             >
-              Buy Template
+              Try Now <span className="ml-2 " >&rarr;</span>
             </Link>
             <Link
-              href="#"
+              href="#solution"
               className="w-full rounded-full border border-black/10 bg-white px-6 py-3.5 text-center text-sm font-semibold text-black hover:bg-black/5 sm:w-auto"
             >
               See Solution

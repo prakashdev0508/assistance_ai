@@ -36,7 +36,7 @@ export default async function Navbar() {
           {/* Right: CTA */}
           <div className="ml-auto flex items-center">
             {session ? (
-              <SignOutButton />
+              <Link href="/dashboard" className=" text-sm font-medium text-black/90 hover:text-black/80 hover:underline underline-offset-2 ">Dashboard <span className=" " >&rarr;</span></Link>
             ) : (
               <Link
                 href="/login"
