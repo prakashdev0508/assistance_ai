@@ -4,19 +4,21 @@ import React from "react";
 import { useState } from "react";
 
 
-export default function SignInButton({redirectTo}: {redirectTo?: string}) {
-    if (!redirectTo) {
-        redirectTo = "/dashboard";
-    }
-    if (typeof redirectTo !== "string") {
-        redirectTo = "/dashboard";
-    }
+export default function SignInButton({ redirectTo }: { redirectTo?: string }) {
+  if (!redirectTo) {
+    redirectTo = "/dashboard";
+  }
+  if (typeof redirectTo !== "string") {
+    redirectTo = "/dashboard";
+  }
   const [isLoading, setIsLoading] = useState(false);
 
   async function handleSignIn() {
     try {
       setIsLoading(true);
-      await signIn("google", { callbackUrl: redirectTo });
+      const result = await signIn("google", { callbackUrl: redirectTo  });
+      console.log( "result of signIn", result);
+
     } finally {
       // If redirect didn't happen (e.g., popup blocked), allow retry
       setIsLoading(false);

@@ -2,6 +2,7 @@
 import Link from "next/link";
 import React from "react";
 import { usePathname } from "next/navigation";
+import { signOut } from "next-auth/react";
 
 const navItems = [
   {
@@ -124,8 +125,21 @@ export default function Sidebar() {
             />
           </svg>
         </button>
-        <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-black text-white">
-          <span className="text-sm font-semibold">AK</span>
+        <div className="group relative">
+          <button
+            onClick={() => signOut({ callbackUrl: "/" })}
+            className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white text-black/60 transition hover:bg-red-50 hover:text-red-600"
+            aria-label="Logout"
+          >
+            <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
+          </button>
+          <span className="pointer-events-none absolute left-[60px] top-1/2 -translate-y-1/2 rounded-full bg-black px-3 py-1 text-xs font-medium text-white opacity-0 shadow group-hover:opacity-100">
+            Logout
+          </span>
         </div>
       </div>
     </aside>

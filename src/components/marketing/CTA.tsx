@@ -6,7 +6,7 @@ export default function CTA() {
     <section className="relative overflow-hidden py-16 md:py-24">
       <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(40rem_40rem_at_80%_20%,rgba(0,0,0,0.06),transparent_60%)]" />
       <div className="mx-auto max-w-7xl px-6">
-        <div className="rounded-3xl border border-black/10 bg-gradient-to-br from-white to-white/60 p-8 shadow-[0_20px_80px_-40px_rgba(0,0,0,0.6)] md:p-12">
+        <div className="rounded-3xl border border-black/10 bg-linear-to-br from-white to-white/60 p-8 shadow-[0_20px_80px_-40px_rgba(0,0,0,0.6)] md:p-12">
           <div className="mx-auto max-w-3xl text-center">
             <h3 className="text-2xl font-semibold md:text-3xl">
               Make your life run on autopilot

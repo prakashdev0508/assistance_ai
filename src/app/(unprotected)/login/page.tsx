@@ -38,7 +38,7 @@ export default function LoginPage() {
             </ul>
           </div>
           <div className="mt-10 w-full max-w-md md:mt-0">
-            <div className="rounded-3xl border border-black/10 bg-gradient-to-b from-white to-white/70 p-6 shadow-[0_20px_80px_-40px_rgba(0,0,0,0.6)] backdrop-blur">
+            <div className="rounded-3xl border border-black/10 bg-linear-to-b from-white to-white/70 p-6 shadow-[0_20px_80px_-40px_rgba(0,0,0,0.6)] backdrop-blur">
               <div className="mx-auto mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-[linear-gradient(180deg,#2d6bff_0%,#1048ff_100%)] text-white shadow-[0_10px_30px_-10px_rgba(16,72,255,0.6)]">
                 <span className="text-base font-semibold">AI</span>
               </div>
