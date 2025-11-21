@@ -5,18 +5,16 @@ import { useState } from "react";
 
 
 export default function SignInButton({ redirectTo }: { redirectTo?: string }) {
-  if (!redirectTo) {
-    redirectTo = "/dashboard";
-  }
-  if (typeof redirectTo !== "string") {
-    redirectTo = "/dashboard";
-  }
+  const targetRedirect =
+    typeof redirectTo === "string" && redirectTo.length > 0
+      ? redirectTo
+      : "/dashboard";
   const [isLoading, setIsLoading] = useState(false);
 
   async function handleSignIn() {
     try {
       setIsLoading(true);
-      const result = await signIn("google", { callbackUrl: redirectTo  });
+      const result = await signIn("google", { callbackUrl: targetRedirect });
       console.log( "result of signIn", result);
 
     } finally {
