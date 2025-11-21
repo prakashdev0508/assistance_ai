@@ -1,0 +1,136 @@
+"use client";
+import Link from "next/link";
+import React from "react";
+import { usePathname } from "next/navigation";
+
+const navItems = [
+  {
+    href: "/dashboard",
+    label: "Dashboard",
+    icon: (
+      <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden="true">
+        <path
+          d="M4 12c0-4.4 3.6-8 8-8s8 3.6 8 8v7H4v-7Z"
+          fill="currentColor"
+          opacity="0.5"
+        />
+        <path
+          d="M10 12V7a2 2 0 1 1 4 0v5"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+        />
+      </svg>
+    ),
+  },
+  {
+    href: "/task",
+    label: "Tasks",
+    icon: (
+      <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden="true">
+        <path
+          d="M5 6h14v12H5z"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          fill="none"
+        />
+        <path
+          d="m8 12 2 2 4-4"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    ),
+  },
+  {
+    href: "/plan",
+    label: "Plan",
+    icon: (
+      <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden="true">
+        <path
+          d="M7 4h10v4H7zM5 8h14v12H5z"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          fill="none"
+        />
+      </svg>
+    ),
+  },
+  {
+    href: "/integrations",
+    label: "Integrations",
+    icon: (
+      <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden="true">
+        <path
+          d="M6 9h12M6 15h12M9 6v12M15 6v12"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+        />
+      </svg>
+    ),
+  },
+];
+
+export default function Sidebar() {
+  const pathname = usePathname();
+
+  return (
+    <aside className="hidden h-full w-20 shrink-0 flex-col justify-between bg-gradient-to-b from-[#0b1b40] via-[#0c2f78] to-[#0d47a1] px-2 py-6 text-white shadow-[0_25px_60px_-30px_rgba(9,26,75,0.9)] md:flex">
+      <div className="flex flex-col items-center gap-8">
+        <Link
+          href="/"
+          className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/20 text-white"
+        >
+          <span className="text-lg font-semibold">Æ</span>
+        </Link>
+        <nav className="flex flex-col items-center gap-3">
+          {navItems.map((item) => {
+            const active = pathname === item.href;
+            return (
+              <div key={item.href} className="group relative">
+                <Link
+                  href={item.href}
+                  className={`flex h-11 w-11 items-center justify-center rounded-2xl transition ${
+                    active
+                      ? "bg-white text-[#0b1b40] shadow-[0_12px_30px_-12px_rgba(0,0,0,0.8)]"
+                      : "bg-white/10 text-white/80 hover:bg-white/20"
+                  }`}
+                  aria-label={item.label}
+                >
+                  {item.icon}
+                </Link>
+                <span className="pointer-events-none absolute left-[60px] top-1/2 -translate-y-1/2 rounded-full bg-white px-3 py-1 text-xs font-medium text-[#0b1b40] opacity-0 shadow group-hover:opacity-100">
+                  {item.label}
+                </span>
+              </div>
+            );
+          })}
+        </nav>
+      </div>
+      <div className="flex flex-col items-center gap-4">
+        <button className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/10 text-white/80 hover:bg-white/20">
+          <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden="true">
+            <path
+              d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm7 0a7 7 0 0 1-14 0"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
+          </svg>
+        </button>
+        <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white text-[#0b1b40]">
+          <span className="text-sm font-semibold">AK</span>
+        </div>
+      </div>
+    </aside>
+  );
+}
+
+

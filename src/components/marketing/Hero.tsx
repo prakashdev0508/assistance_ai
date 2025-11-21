@@ -4,7 +4,7 @@ import React from "react";
 export default function Hero() {
   return (
     <section id="about" className="relative scroll-mt-24">
-      <div className="pointer-events-none absolute inset-0 -z-10 grid-bg" />
+      <div className="pointer-events-none absolute inset-0 grid-bg grid-fade-bottom-lg" />
       <div className="mx-auto max-w-7xl px-6 pb-20 pt-16 md:pt-24">
         <div className="mx-auto max-w-3xl text-center">
           <div className="mb-6 flex items-center justify-center">
@@ -27,10 +27,11 @@ export default function Hero() {
             </div>
           </div>
           <h1 className="text-balance text-5xl font-extrabold tracking-tight md:text-7xl">
-          Your all-in-one AI life manager 
+            Your all-in-one AI life manager
           </h1>
           <p className="mt-5 text-pretty text-base text-black/70 md:text-lg">
-          An intelligent personal AI assistant that plans your day, manages your tasks, remembers everything, and automates your life.          </p>
+            An intelligent personal AI assistant that plans your day, manages your tasks, remembers everything, and automates your life.
+          </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Link
               href="#"

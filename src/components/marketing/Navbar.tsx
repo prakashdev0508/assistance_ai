@@ -1,7 +1,11 @@
 import Link from "next/link";
 import React from "react";
+import { getServerSession } from "next-auth";
+import { authOptions } from "~/lib/auth";
+import SignOutButton from "~/components/auth/SignOutButton";
 
-export default function Navbar() {
+export default async function Navbar() {
+  const session = await getServerSession(authOptions);
   return (
     <header className="sticky top-4 z-50 w-full">
       <div className="mx-auto max-w-6xl rounded-full border border-black/5 bg-white/80 px-4 py-2 shadow-[0_30px_80px_-40px_rgba(0,0,0,0.6)] backdrop-blur-md ring-1 ring-black/5">
@@ -31,12 +35,16 @@ export default function Navbar() {
 
           {/* Right: CTA */}
           <div className="ml-auto flex items-center">
-            <Link
-              href="#"
-              className="rounded-full bg-[linear-gradient(180deg,#1e90ff_0%,#1068ff_100%)] px-4 py-2 text-sm font-semibold text-white shadow-[0_18px_50px_-18px_rgba(16,104,255,0.9)] ring-1 ring-blue-500/40 hover:brightness-110"
-            >
-              Buy Template
-            </Link>
+            {session ? (
+              <SignOutButton />
+            ) : (
+              <Link
+                href="/login"
+                className="rounded-full bg-[linear-gradient(180deg,#1e90ff_0%,#1068ff_100%)] px-4 py-2 text-sm font-semibold text-white shadow-[0_18px_50px_-18px_rgba(16,104,255,0.9)] ring-1 ring-blue-500/40 hover:brightness-110"
+              >
+                Sign in
+              </Link>
+            )}
           </div>
         </nav>
       </div>
