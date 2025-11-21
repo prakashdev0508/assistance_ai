@@ -15,34 +15,34 @@ export const authOptions: NextAuthOptions = {
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   secret: process.env.NEXTAUTH_SECRET,
-  cookies: {
-    sessionToken: {
-      name: `next-auth.session-token`,
-      options: {
-        httpOnly: true,
-        sameSite: "lax",
-        path: "/",
-        secure: process.env.NODE_ENV === "production",
-      },
-    },
-  },
   pages: {
     signIn: "/login",
   },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.email = user.email;
-        token.name = user.name;
+        token.email = user.email ?? undefined;
+        token.name = user.name ?? undefined;
       }
       return token;
     },
     async session({ session, token }) {
-      if (token && session.user) {
-        session.user.email = token.email!;
-        session.user.name = token.name!;
+      if (session.user && token) {
+        session.user.email = token.email as string | null | undefined;
+        session.user.name = token.name as string | null | undefined;
       }
       return session;
+    },
+  },
+  cookies: {
+    sessionToken: {
+      name: `${process.env.NODE_ENV === "production" ? "__Secure-" : ""}next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+      },
     },
   },
   events: {
