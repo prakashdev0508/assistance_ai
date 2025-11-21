@@ -28,8 +28,8 @@ export const authOptions: NextAuthOptions = {
     },
     async session({ session, token }) {
       if (session.user && token) {
-        session.user.email = token.email as string | null | undefined;
-        session.user.name = token.name as string | null | undefined;
+        if (token.email) session.user.email = token.email;
+        if (token.name) session.user.name = token.name;
       }
       return session;
     },
