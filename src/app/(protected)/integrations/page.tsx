@@ -1,22 +1,11 @@
-import React from "react";
+import { getServerSession } from "next-auth";
+import Link from "next/link";
+import { authOptions } from "~/lib/auth";
+import { db } from "~/server/db";
+import { GOOGLE_CALENDAR_PROVIDER } from "~/server/integrations/googleCalendar";
+import DisconnectCalendarButton from "~/components/integrations/DisconnectCalendarButton";
 
-const integrations = [
-  {
-    name: "Google Calendar",
-    desc: "Sync events, availability, and reminders.",
-    status: "Not connected",
-    action: "Connect",
-    icon: (
-      <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#4285F4] text-white">
-        <svg viewBox="0 0 24 24" className="h-6 w-6" aria-hidden="true">
-          <path
-            d="M7 4h10v4H7zM5 8h14v12H5z"
-            fill="white"
-          />
-        </svg>
-      </div>
-    ),
-  },
+const staticIntegrations = [
   {
     name: "Gmail",
     desc: "Draft and send emails, summarize threads.",
@@ -77,7 +66,28 @@ const integrations = [
   },
 ];
 
-export default function IntegrationsPage() {
+export default async function IntegrationsPage() {
+  const session = await getServerSession(authOptions);
+  const user = session?.user?.email
+    ? await db.user.findUnique({
+        where: { email: session.user.email },
+        select: { id: true },
+      })
+    : null;
+
+  const calendarIntegration = user
+    ? await db.integration.findUnique({
+        where: {
+          userId_provider: {
+            userId: user.id,
+            provider: GOOGLE_CALENDAR_PROVIDER,
+          },
+        },
+      })
+    : null;
+
+  const isCalendarConnected = Boolean(calendarIntegration);
+
   return (
     <div className="space-y-6">
       <div>
@@ -88,25 +98,69 @@ export default function IntegrationsPage() {
         </p>
       </div>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {integrations.map((i) => (
+        <Link
+          href={isCalendarConnected ? "/calendar" : "/api/integrations/google/calendar/start"}
+          className="rounded-[28px] border border-white/60 bg-white/80 p-5 shadow-[0_20px_50px_-30px_rgba(0,0,0,0.6)] backdrop-blur hover:shadow-[0_25px_60px_-30px_rgba(0,0,0,0.7)] transition-shadow cursor-pointer"
+        >
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#4285F4] text-white">
+                <svg viewBox="0 0 24 24" className="h-6 w-6" aria-hidden="true">
+                  <path
+                    d="M7 4h10v4H7zM5 8h14v12H5z"
+                    fill="white"
+                  />
+                </svg>
+              </div>
+              <div>
+                <div className="text-sm font-semibold text-black">Google Calendar</div>
+                <div className="text-xs text-black/60">
+                  Sync events, availability, and reminders.
+                </div>
+              </div>
+            </div>
+            <span className="text-xs text-black/60">
+              {isCalendarConnected ? "Connected" : "Not connected"}
+            </span>
+          </div>
+          <div className="mt-4 flex items-center justify-between text-xs text-black/50">
+            <span>Scope: calendar (read & write)</span>
+            {isCalendarConnected ? (
+              <div className="flex items-center gap-2">
+                <DisconnectCalendarButton />
+                <span className="rounded-full bg-black px-4 py-1.5 text-xs font-semibold text-white">
+                  View Calendar
+                </span>
+              </div>
+            ) : (
+              <span className="rounded-full bg-black px-4 py-1.5 text-xs font-semibold text-white">
+                Connect
+              </span>
+            )}
+          </div>
+        </Link>
+
+        {staticIntegrations.map((integration) => (
           <div
-            key={i.name}
+            key={integration.name}
             className="rounded-[28px] border border-white/60 bg-white/80 p-5 shadow-[0_20px_50px_-30px_rgba(0,0,0,0.6)] backdrop-blur"
           >
             <div className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-3">
-                {i.icon}
+                {integration.icon}
                 <div>
-                  <div className="text-sm font-semibold text-black">{i.name}</div>
-                  <div className="text-xs text-black/60">{i.desc}</div>
+                  <div className="text-sm font-semibold text-black">
+                    {integration.name}
+                  </div>
+                  <div className="text-xs text-black/60">{integration.desc}</div>
                 </div>
               </div>
-              <span className="text-xs text-black/60">{i.status}</span>
+              <span className="text-xs text-black/60">{integration.status}</span>
             </div>
             <div className="mt-4 flex items-center justify-between text-xs text-black/50">
               <span>Scope: minimal, user approved</span>
               <button className="rounded-full bg-black px-4 py-1.5 text-xs font-semibold text-white">
-                {i.action}
+                {integration.action}
               </button>
             </div>
           </div>
@@ -115,5 +169,3 @@ export default function IntegrationsPage() {
     </div>
   );
 }
-
-

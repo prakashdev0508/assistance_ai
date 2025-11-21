@@ -64,6 +64,18 @@ const navItems = [
     ),
   },
   {
+    href: "/calendar",
+    label: "Calendar",
+    icon: (
+      <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden="true">
+        <path
+          d="M7 4h10v4H7zM5 8h14v12H5z"
+          fill="currentColor"
+        />
+      </svg>
+    ),
+  },
+  {
     href: "/integrations",
     label: "Integrations",
     icon: (
