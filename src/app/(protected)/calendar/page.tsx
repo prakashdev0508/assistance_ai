@@ -1,6 +1,5 @@
 import { getServerSession } from "next-auth";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { authOptions } from "~/lib/auth";
 import { db } from "~/server/db";
 import {
@@ -120,9 +119,21 @@ function isEventUpcoming(event: CalendarEvent): boolean {
 }
 
 export default async function CalendarPage() {
+  // Middleware already ensures user is authenticated
   const session = await getServerSession(authOptions);
+  
   if (!session?.user?.email) {
-    redirect("/login");
+    // This should not happen due to middleware, but handle gracefully
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-3xl font-semibold text-black">Calendar</h1>
+          <p className="text-sm text-black/60">
+            Please sign in to view your calendar
+          </p>
+        </div>
+      </div>
+    );
   }
 
   const user = await db.user.findUnique({
@@ -131,7 +142,17 @@ export default async function CalendarPage() {
   });
 
   if (!user) {
-    redirect("/login");
+    // User not found in database, but authenticated - show message
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-3xl font-semibold text-black">Calendar</h1>
+          <p className="text-sm text-black/60">
+            User account not found. Please contact support.
+          </p>
+        </div>
+      </div>
+    );
   }
 
   const calendarIntegration = await db.integration.findUnique({

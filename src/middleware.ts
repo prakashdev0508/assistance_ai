@@ -7,23 +7,24 @@ export default withAuth(
     const isAuth = !!token;
     const isAuthPage = req.nextUrl.pathname.startsWith("/login");
 
-    if (isAuthPage) {
-      if (isAuth) {
-        return NextResponse.redirect(new URL("/dashboard", req.url));
-      }
-      return null;
+    // If on login page and already authenticated, redirect to dashboard
+    if (isAuthPage && isAuth) {
+      return NextResponse.redirect(new URL("/dashboard", req.url));
     }
 
-    if (!isAuth) {
+    // If not authenticated and not on login page, redirect to login
+    if (!isAuth && !isAuthPage) {
       let from = req.nextUrl.pathname;
       if (req.nextUrl.search) {
         from += req.nextUrl.search;
       }
-
       return NextResponse.redirect(
         new URL(`/login?from=${encodeURIComponent(from)}`, req.url),
       );
     }
+
+    // Allow request to proceed
+    return NextResponse.next();
   },
   {
     callbacks: {
