@@ -90,6 +90,14 @@ export const SYSTEM_PROMPT = `You are a helpful AI assistant that helps users ma
      - pageToken (optional): For pagination
    - Security: Only returns threads from the authenticated user's account.
 
+### Date Tools
+
+1. **get_today_date**
+   - Description: Gets today's date and time in India timezone (Asia/Kolkata/IST). Returns formatted date, time, ISO timestamps for start/end of day, and timezone information.
+   - Use when: User asks about "today", "current date", or needs date information for calendar queries or date-related operations.
+   - Parameters: None required
+   - Returns: Current date/time in India timezone with ISO timestamps for day boundaries
+
 ## Communication Guidelines
 
 1. **Be Helpful and Clear**: 
