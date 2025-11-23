@@ -286,24 +286,65 @@ export default function ChatInterface() {
                     {message.role === "assistant" ? (
                       <div className="text-[15px] leading-6 text-gray-900 [&_p]:mb-2.5 [&_p:last-child]:mb-0 [&_p]:leading-6 [&_strong]:font-semibold [&_strong]:text-gray-900 [&_em]:italic [&_em]:text-gray-700 [&_h1]:text-xl [&_h1]:font-semibold [&_h1]:mb-2 [&_h1]:mt-4 [&_h1]:text-gray-900 [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:mb-1.5 [&_h2]:mt-3 [&_h2]:text-gray-900 [&_h3]:text-base [&_h3]:font-semibold [&_h3]:mb-1.5 [&_h3]:mt-3 [&_h3]:text-gray-900 [&_ul]:my-2 [&_ul]:ml-5 [&_ul]:list-disc [&_ul]:space-y-1 [&_ol]:my-2 [&_ol]:ml-5 [&_ol]:list-decimal [&_ol]:space-y-1 [&_li]:leading-6 [&_li]:pl-0.5 [&_li]:text-gray-800 [&_a]:text-blue-600 [&_a]:underline [&_a:hover]:text-blue-700 [&_a]:decoration-blue-600/40 [&_a:hover]:decoration-blue-700/60 [&_a]:underline-offset-2 [&_a]:transition-colors [&_code]:bg-gray-100 [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-sm [&_code]:font-mono [&_code]:text-gray-800 [&_pre]:bg-gray-50 [&_pre]:border [&_pre]:border-gray-200 [&_pre]:rounded-lg [&_pre]:p-3 [&_pre]:overflow-x-auto [&_pre]:my-3 [&_blockquote]:border-l-4 [&_blockquote]:border-gray-300 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-gray-700 [&_blockquote]:my-3">
                         {(() => {
+                          // Sanitize content to prevent email addresses from being interpreted as HTML tags
+                          const sanitizeHtml = (html: string): string => {
+                            // Escape email addresses that might be interpreted as tags
+                            // Pattern: <email@domain.com> - this is the problematic pattern
+                            // We need to escape angle brackets around email addresses
+                            return html
+                              // Escape opening tags with email addresses: <email@domain.com> or <email@domain.com attr="value">
+                              .replace(
+                                /<([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})([^>]*?)>/g,
+                                (match, email, attrs) => {
+                                  // Escape the entire opening tag
+                                  return `&lt;${email}${attrs}&gt;`;
+                                }
+                              )
+                              // Escape closing tags with email addresses: </email@domain.com>
+                              .replace(
+                                /<\/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})>/g,
+                                (match, email) => {
+                                  // Escape the closing tag
+                                  return `&lt;/${email}&gt;`;
+                                }
+                              )
+                              // Escape self-closing tags: <email@domain.com />
+                              .replace(
+                                /<([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})([^>]*?)\s*\/>/g,
+                                (match, email, attrs) => {
+                                  // Escape the self-closing tag
+                                  return `&lt;${email}${attrs} /&gt;`;
+                                }
+                              );
+                          };
+
                           // Check if content is already HTML (contains HTML tags)
                           const hasHtmlTags = /<[a-z][\s\S]*>/i.test(message.content);
                           
-                          if (hasHtmlTags) {
-                            // Content is already HTML, parse it directly
-                            return parse(message.content);
-                          } else {
-                            // Content might be markdown, convert it to HTML first
-                            const htmlContent = marked.parse(message.content, {
-                              breaks: true,
-                              gfm: true,
-                            });
-                            // Convert markdown links to HTML with target="_blank"
-                            const processedHtml = (htmlContent as string).replace(
-                              /<a href="([^"]+)">([^<]+)<\/a>/g,
-                              '<a href="$1" target="_blank" rel="noopener noreferrer">$2</a>'
-                            );
-                            return parse(processedHtml);
+                          try {
+                            if (hasHtmlTags) {
+                              // Content is already HTML, sanitize and parse it
+                              const sanitized = sanitizeHtml(message.content);
+                              return parse(sanitized);
+                            } else {
+                              // Content might be markdown, convert it to HTML first
+                              const htmlContent = marked.parse(message.content, {
+                                breaks: true,
+                                gfm: true,
+                              });
+                              // Convert markdown links to HTML with target="_blank"
+                              const processedHtml = (htmlContent as string).replace(
+                                /<a href="([^"]+)">([^<]+)<\/a>/g,
+                                '<a href="$1" target="_blank" rel="noopener noreferrer">$2</a>'
+                              );
+                              // Sanitize the processed HTML
+                              const sanitized = sanitizeHtml(processedHtml);
+                              return parse(sanitized);
+                            }
+                          } catch (error) {
+                            // If parsing fails, return plain text as fallback
+                            console.error('HTML parsing error:', error);
+                            return <span>{message.content}</span>;
                           }
                         })()}
                       </div>
