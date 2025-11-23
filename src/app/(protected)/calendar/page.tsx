@@ -32,94 +32,75 @@ type CalendarEvent = {
   }>;
 };
 
+type DayData = {
+  date: Date;
+  isCurrentMonth: boolean;
+  isToday: boolean;
+  events: CalendarEvent[];
+};
+
+function getEventsForDate(events: CalendarEvent[], date: Date): CalendarEvent[] {
+  const dateStr = date.toISOString().split("T")[0] ?? "";
+  return events.filter((event) => {
+    let eventDate: string;
+    if (event.start.dateTime) {
+      eventDate = new Date(event.start.dateTime).toISOString().split("T")[0] ?? "";
+    } else if (event.start.date) {
+      eventDate = event.start.date;
+    } else {
+      return false;
+    }
+    return eventDate === dateStr;
+  });
+}
+
+function getCalendarDays(year: number, month: number, events: CalendarEvent[]): DayData[] {
+  const firstDay = new Date(year, month, 1);
+  const startDate = new Date(firstDay);
+  startDate.setDate(startDate.getDate() - startDate.getDay()); // Start from Sunday
+
+  const days: DayData[] = [];
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  // Generate 42 days (6 weeks)
+  for (let i = 0; i < 42; i++) {
+    const currentDate = new Date(startDate);
+    currentDate.setDate(startDate.getDate() + i);
+    currentDate.setHours(0, 0, 0, 0);
+
+    const isCurrentMonth = currentDate.getMonth() === month;
+    const isToday = currentDate.getTime() === today.getTime();
+    const dayEvents = isCurrentMonth ? getEventsForDate(events, currentDate) : [];
+
+    days.push({
+      date: currentDate,
+      isCurrentMonth,
+      isToday,
+      events: dayEvents,
+    });
+  }
+
+  return days;
+}
+
 function formatEventTime(event: CalendarEvent): string {
   if (event.start.dateTime) {
     const start = new Date(event.start.dateTime);
-    const end = event.end.dateTime ? new Date(event.end.dateTime) : null;
-
-    const startTime = start.toLocaleTimeString("en-US", {
+    return start.toLocaleTimeString("en-US", {
       hour: "numeric",
       minute: "2-digit",
       hour12: true,
     });
-
-    if (end) {
-      const endTime = end.toLocaleTimeString("en-US", {
-        hour: "numeric",
-        minute: "2-digit",
-        hour12: true,
-      });
-      return `${startTime} - ${endTime}`;
-    }
-
-    return startTime;
   }
-
-  if (event.start.date) {
-    return "All day";
-  }
-
-  return "No time specified";
+  return "All day";
 }
 
-function formatEventDate(event: CalendarEvent): string {
-  if (event.start.dateTime) {
-    const date = new Date(event.start.dateTime);
-    return date.toLocaleDateString("en-US", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  }
-
-  if (event.start.date) {
-    const date = new Date(event.start.date);
-    return date.toLocaleDateString("en-US", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  }
-
-  return "Date not specified";
-}
-
-function isEventToday(event: CalendarEvent): boolean {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  let eventDate: Date;
-  if (event.start.dateTime) {
-    eventDate = new Date(event.start.dateTime);
-  } else if (event.start.date) {
-    eventDate = new Date(event.start.date);
-  } else {
-    return false;
-  }
-
-  eventDate.setHours(0, 0, 0, 0);
-  return eventDate.getTime() === today.getTime();
-}
-
-function isEventUpcoming(event: CalendarEvent): boolean {
-  const now = new Date();
-
-  let eventDate: Date;
-  if (event.start.dateTime) {
-    eventDate = new Date(event.start.dateTime);
-  } else if (event.start.date) {
-    eventDate = new Date(event.start.date);
-    eventDate.setHours(23, 59, 59, 999);
-  } else {
-    return false;
-  }
-
-  return eventDate.getTime() > now.getTime();
-}
-
-export default async function CalendarPage() {
+export default async function CalendarPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ month?: string; year?: string }>;
+}) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.email) {
     redirect("/login");
@@ -182,19 +163,28 @@ export default async function CalendarPage() {
     );
   }
 
+  // Get current month/year or from searchParams
+  const params = await searchParams;
+  const now = new Date();
+  const currentYear = params.year ? parseInt(params.year) : now.getFullYear();
+  const currentMonth = params.month ? parseInt(params.month) : now.getMonth();
+
+  // Calculate month boundaries
+  const monthStart = new Date(currentYear, currentMonth, 1);
+  const monthEnd = new Date(currentYear, currentMonth + 1, 0);
+  monthEnd.setHours(23, 59, 59, 999);
+
   let events: CalendarEvent[] = [];
   let error: string | null = null;
 
   try {
-    const timeMin = new Date().toISOString();
-    const timeMax = new Date(
-      Date.now() + 30 * 24 * 60 * 60 * 1000,
-    ).toISOString();
+    const timeMin = monthStart.toISOString();
+    const timeMax = monthEnd.toISOString();
 
     const response = (await fetchGoogleCalendarEvents(user.id, {
       timeMin,
       timeMax,
-      maxResults: 50,
+      maxResults: 250,
       singleEvents: true,
       orderBy: "startTime",
     })) as { items?: CalendarEvent[] };
@@ -212,10 +202,14 @@ export default async function CalendarPage() {
         : "Failed to fetch calendar events";
   }
 
-  const todayEvents = events.filter(isEventToday);
-  const upcomingEvents = events.filter(
-    (e) => !isEventToday(e) && isEventUpcoming(e),
-  );
+  const calendarDays = getCalendarDays(currentYear, currentMonth, events);
+  const monthName = monthStart.toLocaleDateString("en-US", { month: "long", year: "numeric" });
+
+  // Calculate previous and next month
+  const prevMonth = new Date(currentYear, currentMonth - 1, 1);
+  const nextMonth = new Date(currentYear, currentMonth + 1, 1);
+
+  const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   return (
     <div className="space-y-6">
@@ -236,181 +230,93 @@ export default async function CalendarPage() {
         </div>
       )}
 
-      {!error && events.length === 0 && (
-        <div className="rounded-[28px] border border-white/60 bg-white/80 p-8 shadow-[0_20px_50px_-30px_rgba(0,0,0,0.6)] backdrop-blur text-center">
-          <p className="text-black/60">No upcoming events found</p>
+      {/* Month Navigation */}
+      <div className="flex items-center justify-between rounded-[20px] border border-white/60 bg-white/80 p-4 shadow-[0_10px_30px_-15px_rgba(0,0,0,0.3)] backdrop-blur">
+        <div className="flex items-center gap-2">
+          <Link
+            href={`/calendar?month=${prevMonth.getMonth()}&year=${prevMonth.getFullYear()}`}
+            className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
+          >
+            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </Link>
+          <Link
+            href={`/calendar?month=${now.getMonth()}&year=${now.getFullYear()}`}
+            className="rounded-full bg-black px-4 py-2 text-sm font-semibold text-white hover:bg-black/90 transition-colors"
+          >
+            Today
+          </Link>
         </div>
-      )}
+        <h2 className="text-xl font-semibold text-black">{monthName}</h2>
+        <Link
+          href={`/calendar?month=${nextMonth.getMonth()}&year=${nextMonth.getFullYear()}`}
+          className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
+        >
+          <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </Link>
+      </div>
 
-      {todayEvents.length > 0 && (
-        <div className="space-y-4">
-          <h2 className="text-xl font-semibold text-black">Today</h2>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {todayEvents.map((event) => (
+      {/* Calendar Grid */}
+      <div className="rounded-[20px] border border-white/60 bg-white/80 shadow-[0_10px_30px_-15px_rgba(0,0,0,0.3)] backdrop-blur overflow-hidden">
+        {/* Week Day Headers */}
+        <div className="grid grid-cols-7 border-b border-gray-200 bg-gray-50">
+          {weekDays.map((day) => (
+            <div
+              key={day}
+              className="border-r border-gray-200 p-3 text-center text-sm font-semibold text-gray-700 last:border-r-0"
+            >
+              {day}
+            </div>
+          ))}
+        </div>
+
+        {/* Calendar Days */}
+        <div className="grid grid-cols-7">
+          {calendarDays.map((day, index) => (
+            <div
+              key={index}
+              className={`min-h-[140px] border-r border-b border-gray-100 p-2 transition-colors hover:bg-gray-50 ${
+                day.isCurrentMonth ? "bg-white" : "bg-gray-50/50"
+              } ${index % 7 === 6 ? "border-r-0" : ""}`}
+            >
               <div
-                key={event.id}
-                className="rounded-[20px] border border-white/60 bg-white/80 p-5 shadow-[0_10px_30px_-15px_rgba(0,0,0,0.3)] backdrop-blur hover:shadow-[0_15px_40px_-15px_rgba(0,0,0,0.4)] transition-shadow"
+                className={`mb-1.5 flex h-7 w-7 items-center justify-center rounded-full text-sm font-medium transition-colors ${
+                  day.isToday
+                    ? "bg-[#4285F4] text-white font-semibold"
+                    : day.isCurrentMonth
+                      ? "text-gray-900 hover:bg-gray-100"
+                      : "text-gray-400"
+                }`}
               >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-base font-semibold text-black truncate">
-                      {event.summary || "No title"}
-                    </h3>
-                    <p className="mt-1 text-xs text-black/60">
-                      {formatEventTime(event)}
-                    </p>
-                    {event.location && (
-                      <p className="mt-2 text-xs text-black/50 flex items-center gap-1">
-                        <svg
-                          className="h-3 w-3"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                          />
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                          />
-                        </svg>
-                        <span className="truncate">{event.location}</span>
-                      </p>
-                    )}
-                    {event.attendees && event.attendees.length > 0 && (
-                      <p className="mt-2 text-xs text-black/50">
-                        {event.attendees.length}{" "}
-                        {event.attendees.length === 1 ? "attendee" : "attendees"}
-                      </p>
-                    )}
+                {day.date.getDate()}
+              </div>
+              <div className="space-y-1">
+                {day.events.slice(0, 3).map((event) => (
+                  <a
+                    key={event.id}
+                    href={event.htmlLink ?? "#"}
+                    target={event.htmlLink ? "_blank" : undefined}
+                    rel={event.htmlLink ? "noopener noreferrer" : undefined}
+                    className="block truncate rounded px-1.5 py-0.5 text-xs text-white bg-[#4285F4] hover:bg-[#3367d6] transition-colors cursor-pointer"
+                    title={`${formatEventTime(event)} - ${event.summary || "No title"}`}
+                  >
+                    <span className="font-medium">{formatEventTime(event)}</span>{" "}
+                    <span className="truncate">{event.summary || "No title"}</span>
+                  </a>
+                ))}
+                {day.events.length > 3 && (
+                  <div className="px-1.5 py-0.5 text-xs text-gray-600 font-medium">
+                    +{day.events.length - 3} more
                   </div>
-                  {event.htmlLink && (
-                    <a
-                      href={event.htmlLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="shrink-0 text-[#4285F4] hover:text-[#3367d6] transition-colors"
-                      aria-label="Open in Google Calendar"
-                    >
-                      <svg
-                        className="h-5 w-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                        />
-                      </svg>
-                    </a>
-                  )}
-                </div>
-                {event.description && (
-                  <p className="mt-3 text-xs text-black/70 line-clamp-2">
-                    {event.description}
-                  </p>
                 )}
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
-      )}
-
-      {upcomingEvents.length > 0 && (
-        <div className="space-y-4">
-          <h2 className="text-xl font-semibold text-black">Upcoming</h2>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {upcomingEvents.map((event) => (
-              <div
-                key={event.id}
-                className="rounded-[20px] border border-white/60 bg-white/80 p-5 shadow-[0_10px_30px_-15px_rgba(0,0,0,0.3)] backdrop-blur hover:shadow-[0_15px_40px_-15px_rgba(0,0,0,0.4)] transition-shadow"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-base font-semibold text-black truncate">
-                      {event.summary || "No title"}
-                    </h3>
-                    <p className="mt-1 text-xs text-black/60">
-                      {formatEventDate(event)}
-                    </p>
-                    <p className="mt-1 text-xs text-black/50">
-                      {formatEventTime(event)}
-                    </p>
-                    {event.location && (
-                      <p className="mt-2 text-xs text-black/50 flex items-center gap-1">
-                        <svg
-                          className="h-3 w-3"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                          />
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                          />
-                        </svg>
-                        <span className="truncate">{event.location}</span>
-                      </p>
-                    )}
-                    {event.attendees && event.attendees.length > 0 && (
-                      <p className="mt-2 text-xs text-black/50">
-                        {event.attendees.length}{" "}
-                        {event.attendees.length === 1 ? "attendee" : "attendees"}
-                      </p>
-                    )}
-                  </div>
-                  {event.htmlLink && (
-                    <a
-                      href={event.htmlLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="shrink-0 text-[#4285F4] hover:text-[#3367d6] transition-colors"
-                      aria-label="Open in Google Calendar"
-                    >
-                      <svg
-                        className="h-5 w-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                        />
-                      </svg>
-                    </a>
-                  )}
-                </div>
-                {event.description && (
-                  <p className="mt-3 text-xs text-black/70 line-clamp-2">
-                    {event.description}
-                  </p>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      </div>
     </div>
   );
 }
-
