@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
+import parse from "html-react-parser";
+import { marked } from "marked";
 
 interface Message {
   role: "user" | "assistant";
@@ -218,16 +220,33 @@ export default function ChatInterface() {
       {/* Chat Area - 9 columns */}
       <div className="col-span-9 flex h-full flex-col border-r border-gray-200">
         {/* Messages Container - Scrollable */}
-        <div className="flex-1 overflow-y-auto px-4 py-6">
-          <div className="mx-auto max-w-3xl space-y-6">
+        <div className="flex-1 overflow-y-auto px-4 py-4">
+          <div className="mx-auto max-w-3xl space-y-4">
             {messages.length === 0 && !isLoading && (
               <div className="flex h-full items-center justify-center">
-                <div className="text-center">
-                  <h3 className="text-lg font-semibold text-gray-900">
-                    Start a new conversation
+                <div className="text-center max-w-md">
+                  <div className="mb-4 flex justify-center">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-gray-100 to-gray-200 border border-gray-300/50">
+                      <svg
+                        viewBox="0 0 24 24"
+                        className="h-6 w-6 text-gray-600"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                        <path d="M2 17l10 5 10-5" />
+                        <path d="M2 12l10 5 10-5" />
+                      </svg>
+                    </div>
+                  </div>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                    How can I help you today?
                   </h3>
-                  <p className="mt-2 text-sm text-gray-500">
-                    Ask me anything about your calendar and emails
+                  <p className="text-sm text-gray-500 leading-6">
+                    I can help you manage your Google Calendar and Gmail. Try asking about your schedule, emails, or creating new events.
                   </p>
                 </div>
               </div>
@@ -235,57 +254,15 @@ export default function ChatInterface() {
             {messages.map((message, index) => (
               <div
                 key={index}
-                className={`flex gap-4 ${
+                className={`flex gap-3 ${
                   message.role === "user" ? "justify-end" : "justify-start"
                 }`}
               >
-                {message.role === "assistant" && (
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gray-200">
-                    <svg
-                      viewBox="0 0 24 24"
-                      className="h-5 w-5 text-gray-600"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M12 2L2 7l10 5 10-5-10-5z" />
-                      <path d="M2 17l10 5 10-5" />
-                      <path d="M2 12l10 5 10-5" />
-                    </svg>
-                  </div>
-                )}
-                <div
-                  className={`max-w-[80%] rounded-2xl px-4 py-3 ${
-                    message.role === "user"
-                      ? "bg-black text-white"
-                      : "bg-gray-100 text-gray-900"
-                  }`}
-                >
-                  <div className="whitespace-pre-wrap break-words">
-                    {message.content}
-                  </div>
-                </div>
-                {message.role === "user" && (
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-black">
-                    <svg
-                      viewBox="0 0 24 24"
-                      className="h-5 w-5 text-white"
-                      fill="currentColor"
-                    >
-                      <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-                    </svg>
-                  </div>
-                )}
-              </div>
-            ))}
-            {isLoading && (
-              <div className="flex gap-4 justify-start">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gray-200">
+              {message.role === "assistant" && (
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-gray-100 to-gray-200 border border-gray-300/50">
                   <svg
                     viewBox="0 0 24 24"
-                    className="h-5 w-5 text-gray-600"
+                    className="h-4.5 w-4.5 text-gray-700"
                     fill="none"
                     stroke="currentColor"
                     strokeWidth="2"
@@ -297,8 +274,78 @@ export default function ChatInterface() {
                     <path d="M2 12l10 5 10-5" />
                   </svg>
                 </div>
-                <div className="rounded-2xl bg-gray-100 px-4 py-3">
-                  <div className="flex gap-1">
+              )}
+                <div
+                  className={`max-w-[85%] rounded-2xl ${
+                    message.role === "user"
+                      ? "bg-black text-white px-3.5 py-2.5"
+                      : "bg-white border border-gray-200 px-4 py-3 shadow-sm"
+                  }`}
+                >
+                  <div className="whitespace-pre-wrap break-words">
+                    {message.role === "assistant" ? (
+                      <div className="text-[15px] leading-6 text-gray-900 [&_p]:mb-2.5 [&_p:last-child]:mb-0 [&_p]:leading-6 [&_strong]:font-semibold [&_strong]:text-gray-900 [&_em]:italic [&_em]:text-gray-700 [&_h1]:text-xl [&_h1]:font-semibold [&_h1]:mb-2 [&_h1]:mt-4 [&_h1]:text-gray-900 [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:mb-1.5 [&_h2]:mt-3 [&_h2]:text-gray-900 [&_h3]:text-base [&_h3]:font-semibold [&_h3]:mb-1.5 [&_h3]:mt-3 [&_h3]:text-gray-900 [&_ul]:my-2 [&_ul]:ml-5 [&_ul]:list-disc [&_ul]:space-y-1 [&_ol]:my-2 [&_ol]:ml-5 [&_ol]:list-decimal [&_ol]:space-y-1 [&_li]:leading-6 [&_li]:pl-0.5 [&_li]:text-gray-800 [&_a]:text-blue-600 [&_a]:underline [&_a:hover]:text-blue-700 [&_a]:decoration-blue-600/40 [&_a:hover]:decoration-blue-700/60 [&_a]:underline-offset-2 [&_a]:transition-colors [&_code]:bg-gray-100 [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-sm [&_code]:font-mono [&_code]:text-gray-800 [&_pre]:bg-gray-50 [&_pre]:border [&_pre]:border-gray-200 [&_pre]:rounded-lg [&_pre]:p-3 [&_pre]:overflow-x-auto [&_pre]:my-3 [&_blockquote]:border-l-4 [&_blockquote]:border-gray-300 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-gray-700 [&_blockquote]:my-3">
+                        {(() => {
+                          // Check if content is already HTML (contains HTML tags)
+                          const hasHtmlTags = /<[a-z][\s\S]*>/i.test(message.content);
+                          
+                          if (hasHtmlTags) {
+                            // Content is already HTML, parse it directly
+                            return parse(message.content);
+                          } else {
+                            // Content might be markdown, convert it to HTML first
+                            const htmlContent = marked.parse(message.content, {
+                              breaks: true,
+                              gfm: true,
+                            });
+                            // Convert markdown links to HTML with target="_blank"
+                            const processedHtml = (htmlContent as string).replace(
+                              /<a href="([^"]+)">([^<]+)<\/a>/g,
+                              '<a href="$1" target="_blank" rel="noopener noreferrer">$2</a>'
+                            );
+                            return parse(processedHtml);
+                          }
+                        })()}
+                      </div>
+                    ) : (
+                      <div className="text-[15px] leading-6 text-white">
+                        {message.content}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              {message.role === "user" && (
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-black border border-gray-800">
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="h-4.5 w-4.5 text-white"
+                    fill="currentColor"
+                  >
+                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                  </svg>
+                </div>
+              )}
+              </div>
+            ))}
+            {isLoading && (
+              <div className="flex gap-4 justify-start">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-gray-100 to-gray-200 border border-gray-300/50">
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="h-4.5 w-4.5 text-gray-700"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                    <path d="M2 17l10 5 10-5" />
+                    <path d="M2 12l10 5 10-5" />
+                  </svg>
+                </div>
+                <div className="rounded-2xl bg-white border border-gray-200 px-5 py-4 shadow-sm">
+                  <div className="flex gap-1.5">
                     <div className="h-2 w-2 animate-bounce rounded-full bg-gray-400 [animation-delay:-0.3s]"></div>
                     <div className="h-2 w-2 animate-bounce rounded-full bg-gray-400 [animation-delay:-0.15s]"></div>
                     <div className="h-2 w-2 animate-bounce rounded-full bg-gray-400"></div>
@@ -311,7 +358,7 @@ export default function ChatInterface() {
         </div>
 
         {/* Input Container - Fixed at bottom */}
-        <div className="shrink-0 border-t border-gray-200 bg-white px-4 py-4">
+        <div className="shrink-0 border-t border-gray-200 bg-white px-4 py-3">
           <div className="mx-auto max-w-3xl">
             <form onSubmit={handleSubmit} className="relative">
               <textarea
@@ -319,16 +366,16 @@ export default function ChatInterface() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="Type your message..."
+                placeholder="Message..."
                 rows={1}
-                className="w-full resize-none rounded-2xl border border-gray-300 bg-white px-4 py-3 pr-12 text-sm focus:border-black focus:outline-none focus:ring-2 focus:ring-black/10"
-                style={{ minHeight: "52px", maxHeight: "200px" }}
+                className="w-full resize-none rounded-2xl border border-gray-300 bg-white px-5 py-3.5 pr-14 text-[15px] leading-6 text-gray-900 placeholder:text-gray-400 focus:border-gray-400 focus:outline-none focus:ring-0 transition-colors shadow-sm"
+                style={{ minHeight: "56px", maxHeight: "200px" }}
                 disabled={isLoading}
               />
               <button
                 type="submit"
                 disabled={!input.trim() || isLoading}
-                className="absolute bottom-2 right-2 flex h-8 w-8 items-center justify-center rounded-lg bg-black text-white transition hover:bg-gray-800 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                className="absolute bottom-2.5 right-2.5 flex h-9 w-9 items-center justify-center rounded-lg bg-black text-white transition-all hover:bg-gray-800 disabled:bg-gray-300 disabled:cursor-not-allowed disabled:opacity-50 shadow-sm hover:shadow-md"
               >
                 {isLoading ? (
                   <svg
@@ -367,7 +414,7 @@ export default function ChatInterface() {
                 )}
               </button>
             </form>
-            <p className="mt-2 text-center text-xs text-gray-500">
+            <p className="mt-3 text-center text-xs text-gray-400">
               AI can make mistakes. Check important info.
             </p>
           </div>
