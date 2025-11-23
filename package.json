@@ -17,6 +17,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@langchain/langgraph": "^1.0.2",
+    "@langchain/openai": "^1.1.2",
     "@prisma/adapter-pg": "7.0.0",
     "@prisma/client": "7.0.0",
     "@t3-oss/env-nextjs": "^0.12.0",
@@ -25,6 +27,7 @@
     "@trpc/react-query": "^11.0.0",
     "@trpc/server": "^11.0.0",
     "dotenv": "^17.2.3",
+    "langchain": "^1.0.6",
     "next": "^15.2.3",
     "next-auth": "^4.24.13",
     "pg": "^8.16.3",
