@@ -4,8 +4,10 @@ import { authOptions } from "~/lib/auth";
 import { db } from "~/server/db";
 import { GOOGLE_CALENDAR_PROVIDER } from "~/server/integrations/googleCalendar";
 import { GOOGLE_GMAIL_PROVIDER } from "~/server/integrations/googleGmail";
+import { GOOGLE_MEET_PROVIDER } from "~/server/integrations/googleMeet";
 import DisconnectCalendarButton from "~/components/integrations/DisconnectCalendarButton";
 import DisconnectGmailButton from "~/components/integrations/DisconnectGmailButton";
+import DisconnectMeetButton from "~/components/integrations/DisconnectMeetButton";
 
 const staticIntegrations = [
   {
@@ -32,23 +34,6 @@ const staticIntegrations = [
       </div>
     ),
   },
-  {
-    name: "Google Meet",
-    desc: "Join calls, send recaps, auto-schedule follow-ups.",
-    status: "Not connected",
-    action: "Connect",
-    icon: (
-      <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#0f9d58] text-white">
-        <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden="true">
-          <path
-            d="M5 6h8l4 4v8H5z"
-            fill="white"
-          />
-          <path d="M17 10v5l3 2v-9z" fill="white" opacity="0.6" />
-        </svg>
-      </div>
-    ),
-  },
 ];
 
 export default async function IntegrationsPage() {
@@ -60,7 +45,7 @@ export default async function IntegrationsPage() {
       })
     : null;
 
-  const [calendarIntegration, gmailIntegration] = user
+  const [calendarIntegration, gmailIntegration, meetIntegration] = user
     ? await Promise.all([
         db.integration.findUnique({
           where: {
@@ -78,11 +63,20 @@ export default async function IntegrationsPage() {
             },
           },
         }),
+        db.integration.findUnique({
+          where: {
+            userId_provider: {
+              userId: user.id,
+              provider: GOOGLE_MEET_PROVIDER,
+            },
+          },
+        }),
       ])
-    : [null, null];
+    : [null, null, null];
 
   const isCalendarConnected = Boolean(calendarIntegration);
   const isGmailConnected = Boolean(gmailIntegration);
+  const isMeetConnected = Boolean(meetIntegration);
 
   return (
     <div className="space-y-6">
@@ -169,6 +163,49 @@ export default async function IntegrationsPage() {
                 <DisconnectGmailButton />
                 <span className="rounded-full bg-black px-4 py-1.5 text-xs font-semibold text-white">
                   View Emails
+                </span>
+              </div>
+            ) : (
+              <span className="rounded-full bg-black px-4 py-1.5 text-xs font-semibold text-white">
+                Connect
+              </span>
+            )}
+          </div>
+        </Link>
+
+        <Link
+          href={isMeetConnected ? "/chat" : "/api/integrations/google/meet/start"}
+          className="rounded-[28px] border border-white/60 bg-white/80 p-5 shadow-[0_20px_50px_-30px_rgba(0,0,0,0.6)] backdrop-blur hover:shadow-[0_25px_60px_-30px_rgba(0,0,0,0.7)] transition-shadow cursor-pointer"
+        >
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#0f9d58] text-white">
+                <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden="true">
+                  <path
+                    d="M5 6h8l4 4v8H5z"
+                    fill="white"
+                  />
+                  <path d="M17 10v5l3 2v-9z" fill="white" opacity="0.6" />
+                </svg>
+              </div>
+              <div>
+                <div className="text-sm font-semibold text-black">Google Meet</div>
+                <div className="text-xs text-black/60">
+                  Generate meeting links, log recaps, and follow-ups.
+                </div>
+              </div>
+            </div>
+            <span className="text-xs text-black/60">
+              {isMeetConnected ? "Connected" : "Not connected"}
+            </span>
+          </div>
+          <div className="mt-4 flex items-center justify-between text-xs text-black/50">
+            <span>Scope: meet (read & create spaces)</span>
+            {isMeetConnected ? (
+              <div className="flex items-center gap-2">
+                <DisconnectMeetButton />
+                <span className="rounded-full bg-black px-4 py-1.5 text-xs font-semibold text-white">
+                  View Assistant
                 </span>
               </div>
             ) : (

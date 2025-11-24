@@ -232,6 +232,9 @@ export async function sendGoogleGmailMessage(
     body: string;
     cc?: string;
     bcc?: string;
+    threadId?: string;
+    inReplyTo?: string;
+    references?: string;
   },
 ) {
   const accessToken = await getValidGoogleGmailAccessToken(userId);
@@ -242,6 +245,12 @@ export async function sendGoogleGmailMessage(
   if (message.cc) emailLines.push(`Cc: ${message.cc}`);
   if (message.bcc) emailLines.push(`Bcc: ${message.bcc}`);
   emailLines.push(`Subject: ${message.subject}`);
+  if (message.inReplyTo) {
+    emailLines.push(`In-Reply-To: ${message.inReplyTo}`);
+  }
+  if (message.references) {
+    emailLines.push(`References: ${message.references}`);
+  }
   emailLines.push("Content-Type: text/html; charset=utf-8");
   emailLines.push("");
   emailLines.push(message.body);
@@ -255,6 +264,13 @@ export async function sendGoogleGmailMessage(
     .replace(/\//g, "_")
     .replace(/=+$/, "");
 
+  const bodyPayload: Record<string, unknown> = {
+    raw: encodedMessage,
+  };
+  if (message.threadId) {
+    bodyPayload.threadId = message.threadId;
+  }
+
   const response = await fetch(
     "https://www.googleapis.com/gmail/v1/users/me/messages/send",
     {
@@ -263,9 +279,7 @@ export async function sendGoogleGmailMessage(
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        raw: encodedMessage,
-      }),
+      body: JSON.stringify(bodyPayload),
       cache: "no-store",
     },
   );

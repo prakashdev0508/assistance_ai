@@ -4,6 +4,7 @@ import { authOptions } from "~/lib/auth";
 import { db } from "~/server/db";
 import { GOOGLE_CALENDAR_PROVIDER } from "~/server/integrations/googleCalendar";
 import { GOOGLE_GMAIL_PROVIDER } from "~/server/integrations/googleGmail";
+import { GOOGLE_MEET_PROVIDER } from "~/server/integrations/googleMeet";
 
 export async function GET() {
   const session = await getServerSession(authOptions);
@@ -21,7 +22,7 @@ export async function GET() {
     return NextResponse.json({ error: "User not found" }, { status: 404 });
   }
 
-  const [calendarIntegration, gmailIntegration] = await Promise.all([
+  const [calendarIntegration, gmailIntegration, meetIntegration] = await Promise.all([
     db.integration.findUnique({
       where: {
         userId_provider: {
@@ -52,6 +53,21 @@ export async function GET() {
         updatedAt: true,
       },
     }),
+    db.integration.findUnique({
+      where: {
+        userId_provider: {
+          userId: user.id,
+          provider: GOOGLE_MEET_PROVIDER,
+        },
+      },
+      select: {
+        id: true,
+        scope: true,
+        expiresAt: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    }),
   ]);
 
   return NextResponse.json({
@@ -72,6 +88,15 @@ export async function GET() {
             expiresAt: gmailIntegration.expiresAt,
             connectedAt: gmailIntegration.createdAt,
             updatedAt: gmailIntegration.updatedAt,
+          }
+        : { connected: false },
+      [GOOGLE_MEET_PROVIDER]: meetIntegration
+        ? {
+            connected: true,
+            scope: meetIntegration.scope,
+            expiresAt: meetIntegration.expiresAt,
+            connectedAt: meetIntegration.createdAt,
+            updatedAt: meetIntegration.updatedAt,
           }
         : { connected: false },
     },

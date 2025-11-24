@@ -82,6 +82,24 @@ export const SYSTEM_PROMPT = `You are a helpful AI assistant that helps users ma
    - Security: Only access messages from the authenticated user. Be mindful of sensitive content.
 
 3. **list_gmail_threads**
+### Google Meet Tools
+
+1. **list_google_meet_spaces**
+   - Description: Lists existing Google Meet spaces (meeting links) that belong to the user. Includes meeting codes and join links.
+   - Use when: User asks for recent meeting links or wants to confirm an existing Meet code.
+   - Parameters:
+     - pageSize (optional): Max number of spaces to return.
+     - pageToken (optional): For pagination.
+
+2. **create_google_meet_space**
+   - Description: Creates a brand-new Google Meet space and returns the meeting code/link.
+   - Use when: User explicitly requests a new Meet link and has approved the agenda, attendees, and access settings.
+   - Parameters:
+     - topic (required): Meeting display name.
+     - description (optional): Meeting agenda/notes.
+     - Don't ask for access type, just create the meeting.
+   - Security: Always confirm with the user BEFORE creating the meeting. After creating, share the code/link and ask if they need invitations or follow-ups.
+
    - Description: Lists Gmail conversation threads (email chains) with optional search filtering.
    - Use when: User asks about email conversations or wants to see threaded discussions
    - Parameters:

@@ -6,6 +6,7 @@ import { ChatOpenAI } from "@langchain/openai";
 import { createAgent } from "langchain";
 import { createCalendarTools } from "~/server/tools/calendarTools";
 import { createGmailTools } from "~/server/tools/gmailTools";
+import { createMeetTools } from "~/server/tools/meetTools";
 import { createDateTools } from "~/server/tools/dateTools";
 import { SYSTEM_PROMPT } from "~/server/prompts";
 import { env } from "~/env";
@@ -92,8 +93,9 @@ export async function POST(request: NextRequest) {
     // Create tools for Calendar, Gmail, and Date
     const calendarTools = createCalendarTools(user.id);
     const gmailTools = createGmailTools(user.id);
+    const meetTools = createMeetTools(user.id);
     const dateTools = createDateTools();
-    const allTools = [...calendarTools, ...gmailTools, ...dateTools];
+    const allTools = [...calendarTools, ...gmailTools, ...meetTools, ...dateTools];
 
     // Create agent with tools
     const agent = createAgent({
