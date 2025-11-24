@@ -218,9 +218,9 @@ export default function ChatInterface() {
   return (
     <div className="grid h-[calc(100vh-8rem)] grid-cols-12 gap-0 bg-white">
       {/* Chat Area - 9 columns */}
-      <div className="col-span-9 flex h-full flex-col border-r border-gray-200">
+      <div className="col-span-9 flex h-full flex-col border-r border-gray-200 max-h-[calc(108vh-10rem)] ">
         {/* Messages Container - Scrollable */}
-        <div className="flex-1 overflow-y-auto px-4 py-4">
+        <div className="flex-1 overflow-y-auto px-4 py-4 no-scrollbar">
           <div className="mx-auto max-w-3xl space-y-4">
             {messages.length === 0 && !isLoading && (
               <div className="flex h-full items-center justify-center">
@@ -254,118 +254,121 @@ export default function ChatInterface() {
             {messages.map((message, index) => (
               <div
                 key={index}
-                className={`flex gap-3 ${
-                  message.role === "user" ? "justify-end" : "justify-start"
-                }`}
+                className={`flex gap-3 ${message.role === "user" ? "justify-end" : "justify-start"
+                  }`}
               >
-              {message.role === "assistant" && (
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-gray-100 to-gray-200 border border-gray-300/50">
-                  <svg
-                    viewBox="0 0 24 24"
-                    className="h-4.5 w-4.5 text-gray-700"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M12 2L2 7l10 5 10-5-10-5z" />
-                    <path d="M2 17l10 5 10-5" />
-                    <path d="M2 12l10 5 10-5" />
-                  </svg>
-                </div>
-              )}
+                {message.role === "assistant" && (
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-gray-100 to-gray-200 border border-gray-300/50">
+                    <svg
+                      viewBox="0 0 24 24"
+                      className="h-4.5 w-4.5 text-gray-700"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                      <path d="M2 17l10 5 10-5" />
+                      <path d="M2 12l10 5 10-5" />
+                    </svg>
+                  </div>
+                )}
                 <div
-                  className={`max-w-[85%] rounded-2xl ${
-                    message.role === "user"
+                  className={`max-w-[85%] rounded-2xl ${message.role === "user"
                       ? "bg-black text-white px-3.5 py-2.5"
                       : "bg-white border border-gray-200 px-4 py-3 shadow-sm"
-                  }`}
+                    }`}
                 >
-                  <div className="whitespace-pre-wrap break-words">
+                  <div className="whitespace-pre-wrap">
                     {message.role === "assistant" ? (
-                      <div className="text-[15px] leading-6 text-gray-900 [&_p]:mb-2.5 [&_p:last-child]:mb-0 [&_p]:leading-6 [&_strong]:font-semibold [&_strong]:text-gray-900 [&_em]:italic [&_em]:text-gray-700 [&_h1]:text-xl [&_h1]:font-semibold [&_h1]:mb-2 [&_h1]:mt-4 [&_h1]:text-gray-900 [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:mb-1.5 [&_h2]:mt-3 [&_h2]:text-gray-900 [&_h3]:text-base [&_h3]:font-semibold [&_h3]:mb-1.5 [&_h3]:mt-3 [&_h3]:text-gray-900 [&_ul]:my-2 [&_ul]:ml-5 [&_ul]:list-disc [&_ul]:space-y-1 [&_ol]:my-2 [&_ol]:ml-5 [&_ol]:list-decimal [&_ol]:space-y-1 [&_li]:leading-6 [&_li]:pl-0.5 [&_li]:text-gray-800 [&_a]:text-blue-600 [&_a]:underline [&_a:hover]:text-blue-700 [&_a]:decoration-blue-600/40 [&_a:hover]:decoration-blue-700/60 [&_a]:underline-offset-2 [&_a]:transition-colors [&_code]:bg-gray-100 [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-sm [&_code]:font-mono [&_code]:text-gray-800 [&_pre]:bg-gray-50 [&_pre]:border [&_pre]:border-gray-200 [&_pre]:rounded-lg [&_pre]:p-3 [&_pre]:overflow-x-auto [&_pre]:my-3 [&_blockquote]:border-l-4 [&_blockquote]:border-gray-300 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-gray-700 [&_blockquote]:my-3">
+                      <div
+                        className="
+        text-[15px] text-gray-900 leading-normal
+
+        [&_p]:m-0
+        [&_strong]:font-semibold
+        [&_em]:italic text-gray-700
+
+        [&_h1]:text-xl [&_h1]:font-semibold [&_h1]:m-0
+        [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:m-0
+        [&_h3]:text-base [&_h3]:font-semibold [&_h3]:m-0
+
+        [&_ul]:m-0 [&_ul]:ml-5 [&_ul]:list-disc [&_ul]:space-y-0
+        [&_ol]:m-0 [&_ol]:ml-5 [&_ol]:list-decimal [&_ol]:space-y-0
+        [&_li]:m-0 leading-normal
+
+        [&_a]:text-blue-600 [&_a]:underline [&_a]:underline-offset-2
+
+        [&_code]:bg-gray-100 [&_code]:px-1 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-sm [&_code]:font-mono
+
+        [&_pre]:bg-gray-50 [&_pre]:border [&_pre]:border-gray-200 [&_pre]:rounded-lg [&_pre]:p-3 [&_pre]:overflow-x-auto [&_pre]:m-0
+
+        [&_blockquote]:border-l-4 [&_blockquote]:border-gray-300 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:m-0
+      "
+                      >
                         {(() => {
-                          // Sanitize content to prevent email addresses from being interpreted as HTML tags
                           const sanitizeHtml = (html: string): string => {
-                            // Escape email addresses that might be interpreted as tags
-                            // Pattern: <email@domain.com> - this is the problematic pattern
-                            // We need to escape angle brackets around email addresses
                             return html
-                              // Escape opening tags with email addresses: <email@domain.com> or <email@domain.com attr="value">
                               .replace(
                                 /<([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})([^>]*?)>/g,
-                                (match, email, attrs) => {
-                                  // Escape the entire opening tag
-                                  return `&lt;${email}${attrs}&gt;`;
-                                }
+                                (match, email, attrs) => `&lt;${email}${attrs}&gt;`
                               )
-                              // Escape closing tags with email addresses: </email@domain.com>
                               .replace(
                                 /<\/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})>/g,
-                                (match, email) => {
-                                  // Escape the closing tag
-                                  return `&lt;/${email}&gt;`;
-                                }
+                                (match, email) => `&lt;/${email}&gt;`
                               )
-                              // Escape self-closing tags: <email@domain.com />
                               .replace(
                                 /<([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})([^>]*?)\s*\/>/g,
-                                (match, email, attrs) => {
-                                  // Escape the self-closing tag
-                                  return `&lt;${email}${attrs} /&gt;`;
-                                }
+                                (match, email, attrs) => `&lt;${email}${attrs} /&gt;`
                               );
                           };
 
-                          // Check if content is already HTML (contains HTML tags)
                           const hasHtmlTags = /<[a-z][\s\S]*>/i.test(message.content);
-                          
+
                           try {
                             if (hasHtmlTags) {
-                              // Content is already HTML, sanitize and parse it
                               const sanitized = sanitizeHtml(message.content);
                               return parse(sanitized);
                             } else {
-                              // Content might be markdown, convert it to HTML first
                               const htmlContent = marked.parse(message.content, {
                                 breaks: true,
                                 gfm: true,
                               });
-                              // Convert markdown links to HTML with target="_blank"
+
                               const processedHtml = (htmlContent as string).replace(
                                 /<a href="([^"]+)">([^<]+)<\/a>/g,
                                 '<a href="$1" target="_blank" rel="noopener noreferrer">$2</a>'
                               );
-                              // Sanitize the processed HTML
+
                               const sanitized = sanitizeHtml(processedHtml);
                               return parse(sanitized);
                             }
                           } catch (error) {
-                            // If parsing fails, return plain text as fallback
-                            console.error('HTML parsing error:', error);
+                            console.error("HTML parsing error:", error);
                             return <span>{message.content}</span>;
                           }
                         })()}
                       </div>
                     ) : (
-                      <div className="text-[15px] leading-6 text-white">
+                      <div className="text-[15px] leading-normal text-white">
                         {message.content}
                       </div>
                     )}
                   </div>
+
                 </div>
-              {message.role === "user" && (
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-black border border-gray-800">
-                  <svg
-                    viewBox="0 0 24 24"
-                    className="h-4.5 w-4.5 text-white"
-                    fill="currentColor"
-                  >
-                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-                  </svg>
-                </div>
-              )}
+                {message.role === "user" && (
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-black border border-gray-800">
+                    <svg
+                      viewBox="0 0 24 24"
+                      className="h-4.5 w-4.5 text-white"
+                      fill="currentColor"
+                    >
+                      <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                    </svg>
+                  </div>
+                )}
               </div>
             ))}
             {isLoading && (
@@ -463,9 +466,9 @@ export default function ChatInterface() {
       </div>
 
       {/* History Sidebar - 3 columns */}
-      <div className="col-span-3 flex h-full flex-col bg-white">
+      <div className="col-span-3 flex h-full flex-col bg-white max-h-[calc(100vh-9rem)]">
         {/* Sidebar Header - Fixed */}
-        <div className="shrink-0 flex items-center justify-between border-b border-gray-200 px-4 py-3">
+        <div className="shrink-0 flex items-center justify-between border-b border-gray-200 px-4 py-3 ">
           <h2 className="text-sm font-semibold text-gray-900">Chat History</h2>
           <button
             onClick={createNewSession}
@@ -503,11 +506,10 @@ export default function ChatInterface() {
                 <div
                   key={session.id}
                   onClick={() => setCurrentSessionId(session.id)}
-                  className={`group relative mb-1 cursor-pointer rounded-lg px-3 py-2 transition ${
-                    currentSessionId === session.id
+                  className={`group relative mb-1 cursor-pointer rounded-lg px-3 py-2 transition ${currentSessionId === session.id
                       ? "bg-gray-100"
                       : "hover:bg-gray-50"
-                  }`}
+                    }`}
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1 min-w-0">
