@@ -96,7 +96,7 @@ export async function PATCH(
 
     if (body.title !== undefined) updateData.title = body.title;
     if (body.description !== undefined)
-      updateData.description = body.description || null;
+      updateData.description = body.description ?? null;
     if (body.type !== undefined) {
       if (!["short_term", "long_term"].includes(body.type)) {
         return NextResponse.json(

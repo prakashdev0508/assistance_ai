@@ -319,7 +319,7 @@ async function fetchFreshDashboardData(userId: number): Promise<DashboardData> {
   };
 }
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const session = await getServerSession(authOptions);
 

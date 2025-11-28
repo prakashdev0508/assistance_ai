@@ -28,9 +28,13 @@ export default function GoalModal({ isOpen, onClose, goal }: GoalModalProps) {
   useEffect(() => {
     if (goal) {
       setTitle(goal.title);
-      setDescription(goal.description || "");
+      setDescription(goal.description ?? "");
       setType(goal.type as "short_term" | "long_term");
-      setDeadline(goal.deadline && goal.deadline !== null ? new Date(goal.deadline).toISOString().split("T")[0] : "");
+      if (goal.deadline) {
+        setDeadline(new Date(goal.deadline).toISOString().split("T")[0] ?? "");
+      } else {
+        setDeadline("");
+      }
       setStatus(goal.status);
     } else {
       setTitle("");
@@ -73,8 +77,8 @@ export default function GoalModal({ isOpen, onClose, goal }: GoalModalProps) {
       if (response.ok) {
         onClose();
       } else {
-        const error = await response.json();
-        alert(error.error || "Failed to save goal");
+        const error = (await response.json()) as { error?: string };
+        alert(error.error ?? "Failed to save goal");
       }
     } catch (err) {
       alert("Failed to save goal");
