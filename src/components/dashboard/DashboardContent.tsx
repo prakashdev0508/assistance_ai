@@ -153,7 +153,7 @@ export default function DashboardContent() {
           href="/chat"
           className="rounded-lg bg-black px-4 py-2 text-sm font-medium text-white transition hover:bg-gray-800"
         >
-          Ask AI Assistant
+          Chat with Assistant
         </Link>
       </div>
 

@@ -9,33 +9,6 @@ import DisconnectCalendarButton from "~/components/integrations/DisconnectCalend
 import DisconnectGmailButton from "~/components/integrations/DisconnectGmailButton";
 import DisconnectMeetButton from "~/components/integrations/DisconnectMeetButton";
 
-const staticIntegrations = [
-  {
-    name: "Google Drive",
-    desc: "Search and understand files across folders.",
-    status: "Not connected",
-    action: "Connect",
-    icon: (
-      <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white">
-        <svg viewBox="0 0 24 24" className="h-7 w-7" aria-hidden="true">
-          <path
-            d="M7 4h6l4 7h-6z"
-            fill="#34a853"
-          />
-          <path
-            d="M13 4h4l5 9h-4z"
-            fill="#4285f4"
-          />
-          <path
-            d="M2 13h6l4 7H6z"
-            fill="#fbbc05"
-          />
-        </svg>
-      </div>
-    ),
-  },
-];
-
 export default async function IntegrationsPage() {
   const session = await getServerSession(authOptions);
   const user = session?.user?.email
@@ -215,32 +188,6 @@ export default async function IntegrationsPage() {
             )}
           </div>
         </Link>
-
-        {staticIntegrations.map((integration) => (
-          <div
-            key={integration.name}
-            className="rounded-[28px] border border-white/60 bg-white/80 p-5 shadow-[0_20px_50px_-30px_rgba(0,0,0,0.6)] backdrop-blur"
-          >
-            <div className="flex items-center justify-between gap-3">
-              <div className="flex items-center gap-3">
-                {integration.icon}
-                <div>
-                  <div className="text-sm font-semibold text-black">
-                    {integration.name}
-                  </div>
-                  <div className="text-xs text-black/60">{integration.desc}</div>
-                </div>
-              </div>
-              <span className="text-xs text-black/60">{integration.status}</span>
-            </div>
-            <div className="mt-4 flex items-center justify-between text-xs text-black/50">
-              <span>Scope: minimal, user approved</span>
-              <button className="rounded-full bg-black px-4 py-1.5 text-xs font-semibold text-white">
-                {integration.action}
-              </button>
-            </div>
-          </div>
-        ))}
       </div>
     </div>
   );
