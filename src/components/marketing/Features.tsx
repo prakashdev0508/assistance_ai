@@ -63,7 +63,7 @@ export default function Features() {
                 <div className="h-4 w-4 rounded bg-blue-500/20"></div>
               </div>
               <div className="grid grid-cols-7 gap-1">
-                {[...Array(7)].map((_, i) => (
+                {Array.from({ length: 7 }).map((_, i) => (
                   <div key={i} className="h-6 rounded bg-black/5 text-center text-[8px] text-black/40"></div>
                 ))}
               </div>
