@@ -1,5 +1,5 @@
 import { getServerSession } from "next-auth";
-import { NextResponse, type NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 import { authOptions } from "~/lib/auth";
 import { db } from "~/server/db";
 import { fetchGoogleCalendarEvents } from "~/server/integrations/googleCalendar";
