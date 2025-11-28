@@ -110,7 +110,7 @@ export default function Sidebar() {
           href="/"
           className="flex h-10 w-10 items-center justify-center rounded-2xl bg-black/5 text-black/80"
         >
-          <span className="text-lg font-semibold">Æ</span>
+          <span className="text-sm font-semibold">MA</span>
         </Link>
         <nav className="flex flex-col items-center gap-3">
           {navItems.map((item) => {

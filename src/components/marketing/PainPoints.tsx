@@ -1,12 +1,12 @@
 import React from "react";
 
 const painPoints = [
-  { title: "Messy workflows", desc: "Too many tools, no single source of truth." },
-  { title: "No automation", desc: "Manual follow-ups, repetitive planning, constant context switching." },
-  { title: "Low clarity", desc: "Unclear priorities and schedules lead to missed goals." },
-  { title: "Fragmented memory", desc: "Important info buried across chats, docs, and emails." },
-  { title: "Poor habits", desc: "Hard to build routines and track progress meaningfully." },
-  { title: "Time drains", desc: "Tiny decisions and admin work add up daily." },
+  { title: "Switching between multiple apps", desc: "Jumping between Google Calendar, Gmail, Meet, and task managers for every action. Each tool requires learning its interface and workflow." },
+  { title: "No natural way to interact", desc: "You have to navigate menus, fill forms, and click buttons instead of just telling an AI assistant what you need in plain English." },
+  { title: "Everything requires manual steps", desc: "Scheduling a meeting? Create event, add attendees, find a time, create Meet link, send invites—all done manually, step by step." },
+  { title: "No intelligent help", desc: "Tools don't understand your context, can't suggest better times, or proactively help. You're on your own to figure everything out." },
+  { title: "Information scattered everywhere", desc: "Important details live in emails, calendar notes, task descriptions, and chat threads—with no AI to connect the dots and remind you." },
+  { title: "Time wasted on simple tasks", desc: "What should be instant—like checking your schedule or finding an email—takes multiple clicks, searches, and mental effort every single time." },
 ];
 
 export default function PainPoints() {
@@ -15,10 +15,10 @@ export default function PainPoints() {
       <div className="mx-auto max-w-7xl px-6">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="text-balance text-3xl font-semibold tracking-tight md:text-4xl">
-            Your life should be clear, not confusing
+            Stop juggling apps. Just chat with AI.
           </h2>
           <p className="mt-3 text-base text-black/70">
-            Common pain points that your personal AI assistant resolves instantly.
+            One conversation interface replaces all your tools. Tell your AI what you need—it handles email, calendar, meetings, and tasks instantly. Zero clicks, zero learning curve.
           </p>
         </div>
         <div className="mt-10 grid grid-cols-1 gap-6 md:mt-14 md:grid-cols-2 lg:grid-cols-3">

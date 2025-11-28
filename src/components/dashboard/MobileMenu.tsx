@@ -150,7 +150,7 @@ export default function MobileMenu() {
               className="flex h-10 w-10 items-center justify-center rounded-2xl bg-black/5 text-black/80"
               onClick={() => setIsOpen(false)}
             >
-              <span className="text-lg font-semibold">Æ</span>
+              <span className="text-sm font-semibold">MA</span>
             </Link>
             <button
               onClick={() => setIsOpen(false)}

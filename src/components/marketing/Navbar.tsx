@@ -12,10 +12,10 @@ export default async function Navbar() {
           {/* Left: Logo */}
           <div className="flex items-center gap-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[linear-gradient(180deg,#2d6bff_0%,#1048ff_100%)] text-white shadow-[0_10px_30px_-10px_rgba(16,72,255,0.6)]">
-              <span className="text-base font-semibold">S</span>
+              <span className="text-base font-semibold">M</span>
             </div>
             <Link href="/" className="text-base font-semibold">
-              SaaSwiftie
+              MyAssistant
             </Link>
           </div>
 
