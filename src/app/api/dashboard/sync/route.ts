@@ -1,5 +1,5 @@
 import { getServerSession } from "next-auth";
-import { NextResponse, type NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 import { authOptions } from "~/lib/auth";
 import { db } from "~/server/db";
 import { fetchGoogleCalendarEvents } from "~/server/integrations/googleCalendar";
@@ -80,27 +80,6 @@ type DashboardData = {
   }>;
   lastSyncAt: string;
 };
-
-// Helper function to check if sync is needed
-function shouldSync(lastSyncAt: Date | null): boolean {
-  if (!lastSyncAt) return true;
-
-  const now = new Date();
-  const lastSync = new Date(lastSyncAt);
-
-  // Check if it's been more than 6 hours
-  const hoursDiff = (now.getTime() - lastSync.getTime()) / (1000 * 60 * 60);
-  if (hoursDiff >= 6) return true;
-
-  // Check if it's a different date (in India timezone)
-  const today = getTodayInIndia();
-  const lastSyncDate = new Date(lastSync);
-  lastSyncDate.setHours(0, 0, 0, 0);
-  const todayDate = new Date(today);
-  todayDate.setHours(0, 0, 0, 0);
-
-  return lastSyncDate.getTime() !== todayDate.getTime();
-}
 
 // Function to fetch fresh dashboard data
 async function fetchFreshDashboardData(userId: number): Promise<DashboardData> {
@@ -238,7 +217,7 @@ async function fetchFreshDashboardData(userId: number): Promise<DashboardData> {
     take: 10,
   });
 
-  // Fetch ongoing goals (in_progress or pending with deadline today or in future)
+  // Fetch ongoing goals
   const goals = await db.goal.findMany({
     where: {
       userId,
@@ -319,7 +298,7 @@ async function fetchFreshDashboardData(userId: number): Promise<DashboardData> {
   };
 }
 
-export async function GET(request: NextRequest) {
+export async function POST() {
   try {
     const session = await getServerSession(authOptions);
 
@@ -336,50 +315,38 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    // Check for cached dashboard data
-    const cachedData = await db.dashboardData.findUnique({
+    // Fetch fresh data
+    const dashboardData = await fetchFreshDashboardData(user.id);
+
+    // Save to database
+    await db.dashboardData.upsert({
       where: { userId: user.id },
+      create: {
+        userId: user.id,
+        data: dashboardData as unknown as object,
+        lastSyncAt: new Date(dashboardData.lastSyncAt),
+      },
+      update: {
+        data: dashboardData as unknown as object,
+        lastSyncAt: new Date(dashboardData.lastSyncAt),
+      },
     });
 
-    // Check if we need to sync
-    const needsSync = shouldSync(cachedData?.lastSyncAt ?? null);
-
-    let dashboardData: DashboardData;
-
-    if (needsSync || !cachedData) {
-      // Fetch fresh data
-      dashboardData = await fetchFreshDashboardData(user.id);
-
-      // Save to database
-      await db.dashboardData.upsert({
-        where: { userId: user.id },
-        create: {
-          userId: user.id,
-          data: dashboardData as unknown as object,
-          lastSyncAt: new Date(dashboardData.lastSyncAt),
-        },
-        update: {
-          data: dashboardData as unknown as object,
-          lastSyncAt: new Date(dashboardData.lastSyncAt),
-        },
-      });
-    } else {
-      // Use cached data
-      dashboardData = cachedData.data as unknown as DashboardData;
-      dashboardData.lastSyncAt = cachedData.lastSyncAt.toISOString();
-    }
-
-    return NextResponse.json(dashboardData);
+    return NextResponse.json({
+      success: true,
+      data: dashboardData,
+    });
   } catch (error) {
-    console.error("[dashboard] Failed to fetch dashboard data", error);
+    console.error("[dashboard] Failed to sync dashboard data", error);
     return NextResponse.json(
       {
         error:
           error instanceof Error
             ? error.message
-            : "Failed to fetch dashboard data",
+            : "Failed to sync dashboard data",
       },
       { status: 500 },
     );
   }
 }
+

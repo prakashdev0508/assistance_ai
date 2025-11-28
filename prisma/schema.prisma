@@ -13,17 +13,19 @@ datasource db {
 }
 
 model User {
-  id         Int      @id @default(autoincrement())
+  id         Int       @id @default(autoincrement())
   name       String
-  email      String   @unique
-  is_active  Boolean  @default(true)
+  email      String    @unique
+  is_active  Boolean   @default(true)
   last_login DateTime?
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 
-  integrations Integration[]
-  chatSessions ChatSession[]
-  tasks        Task[]
+  integrations  Integration[]
+  chatSessions  ChatSession[]
+  tasks         Task[]
+  goals         Goal[]
+  dashboardData DashboardData?
 
   @@index([email])
 }
@@ -62,7 +64,7 @@ model ChatSession {
 model ChatMessage {
   id        Int      @id @default(autoincrement())
   sessionId Int
-  role      String   // "user" | "assistant" | "system"
+  role      String // "user" | "assistant" | "system"
   content   String   @db.Text
   createdAt DateTime @default(now())
 
@@ -80,7 +82,7 @@ model Task {
   startDate   DateTime?
   endDate     DateTime?
   status      String    @default("pending") // "pending" | "in_progress" | "completed" | "cancelled"
-  priority    String    @default("medium")  // "low" | "medium" | "high"
+  priority    String    @default("medium") // "low" | "medium" | "high"
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
@@ -108,4 +110,38 @@ model SubTask {
   @@index([taskId])
   @@index([status])
   @@index([title])
+}
+
+model Goal {
+  id          Int       @id @default(autoincrement())
+  userId      Int
+  title       String
+  description String?   @db.Text
+  type        String // "short_term" | "long_term"
+  deadline    DateTime? // Optional deadline
+  status      String    @default("pending") // "pending" | "in_progress" | "completed" | "cancelled"
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([type])
+  @@index([status])
+  @@index([deadline])
+  @@index([title])
+}
+
+model DashboardData {
+  id         Int      @id @default(autoincrement())
+  userId     Int      @unique
+  data       Json     @db.JsonB // Stores the dashboard data as JSON
+  lastSyncAt DateTime @default(now())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([lastSyncAt])
 }

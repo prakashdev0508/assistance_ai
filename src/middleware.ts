@@ -15,7 +15,7 @@ export const config = {
     "/task/:path*",
     "/plan/:path*",
     "/integrations/:path*",
-    "/calendar/:path*",
+    "/goals/:path*",
   ],
 };
 
