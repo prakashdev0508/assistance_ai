@@ -34,7 +34,7 @@ export default function Hero() {
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Link
-              href="/signin"
+              href="/login"
               className="w-full rounded-full bg-[linear-gradient(180deg,#1e90ff_0%,#1068ff_100%)] px-6 py-3.5 text-center text-sm font-semibold text-white shadow-[0_18px_50px_-18px_rgba(16,104,255,0.8)] ring-1 ring-blue-500/40 hover:brightness-110 sm:w-auto"
             >
               Try Now <span className="ml-2 " >&rarr;</span>
