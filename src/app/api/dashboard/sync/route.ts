@@ -12,6 +12,9 @@ import {
   getTodayISOEnd,
   getTodayInIndia,
 } from "~/server/utils/dateUtils";
+import { GOOGLE_CALENDAR_PROVIDER } from "~/server/integrations/googleCalendar";
+import { GOOGLE_GMAIL_PROVIDER } from "~/server/integrations/googleGmail";
+import { GOOGLE_MEET_PROVIDER } from "~/server/integrations/googleMeet";
 
 type CalendarEvent = {
   id?: string;
@@ -78,6 +81,11 @@ type DashboardData = {
     status: string;
     deadline?: string | null;
   }>;
+  integrations: {
+    calendar: boolean;
+    gmail: boolean;
+    meet: boolean;
+  };
   lastSyncAt: string;
 };
 
@@ -250,6 +258,34 @@ async function fetchFreshDashboardData(userId: number): Promise<DashboardData> {
     take: 10,
   });
 
+  // Fetch integration status
+  const [calendarIntegration, gmailIntegration, meetIntegration] = await Promise.all([
+    db.integration.findUnique({
+      where: {
+        userId_provider: {
+          userId,
+          provider: GOOGLE_CALENDAR_PROVIDER,
+        },
+      },
+    }),
+    db.integration.findUnique({
+      where: {
+        userId_provider: {
+          userId,
+          provider: GOOGLE_GMAIL_PROVIDER,
+        },
+      },
+    }),
+    db.integration.findUnique({
+      where: {
+        userId_provider: {
+          userId,
+          provider: GOOGLE_MEET_PROVIDER,
+        },
+      },
+    }),
+  ]);
+
   return {
     today: {
       date: today.toISOString(),
@@ -294,6 +330,11 @@ async function fetchFreshDashboardData(userId: number): Promise<DashboardData> {
       status: goal.status,
       deadline: goal.deadline?.toISOString() ?? null,
     })),
+    integrations: {
+      calendar: Boolean(calendarIntegration),
+      gmail: Boolean(gmailIntegration),
+      meet: Boolean(meetIntegration),
+    },
     lastSyncAt: new Date().toISOString(),
   };
 }

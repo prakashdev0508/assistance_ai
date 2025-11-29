@@ -56,6 +56,11 @@ interface DashboardData {
   };
   tasks: Task[];
   goals: Goal[];
+  integrations: {
+    calendar: boolean;
+    gmail: boolean;
+    meet: boolean;
+  };
   lastSyncAt: string;
 }
 
@@ -265,7 +270,7 @@ export default function DashboardContent() {
                 Syncing...
               </span>
             ) : (
-              "🔄 Sync Now"
+              "Sync Now"
             )}
           </button>
           <Link
@@ -274,6 +279,59 @@ export default function DashboardContent() {
           >
             Chat with Assistant
           </Link>
+          
+          {/* Connected Apps Widgets - Overlapping Circles with Icons */}
+          <div className="relative flex items-center">
+            {/* Google Calendar - Purple */}
+            <Link
+              href={data.integrations.calendar ? "/calendar" : "/api/integrations/google/calendar/start"}
+              className="group relative z-10 flex h-8 w-8 items-center justify-center rounded-full transition hover:scale-110"
+              title={data.integrations.calendar ? "Google Calendar - Connected" : "Google Calendar - Not connected"}
+            >
+              <div className={`flex h-8 w-8 items-center justify-center rounded-full ${data.integrations.calendar ? "bg-[#9333ea]" : "bg-gray-300"}`}>
+                <svg viewBox="0 0 24 24" className="h-4 w-4 text-white" fill="currentColor" aria-hidden="true">
+                  <path d="M7 4h10v4H7zM5 8h14v12H5z" />
+                </svg>
+              </div>
+              {data.integrations.calendar && (
+                <div className="absolute -right-0.5 -top-0.5 h-2 w-2 rounded-full border border-white bg-green-500"></div>
+              )}
+            </Link>
+
+            {/* Gmail - Blue */}
+            <Link
+              href={data.integrations.gmail ? "/gmail" : "/api/integrations/google/gmail/start"}
+              className="group relative z-20 -ml-2.5 flex h-8 w-8 items-center justify-center rounded-full transition hover:scale-110"
+              title={data.integrations.gmail ? "Gmail - Connected" : "Gmail - Not connected"}
+            >
+              <div className={`flex h-8 w-8 items-center justify-center rounded-full ${data.integrations.gmail ? "bg-[#3b82f6]" : "bg-gray-300"}`}>
+                <svg viewBox="0 0 24 24" className="h-4 w-4 text-white" fill="currentColor" aria-hidden="true">
+                  <path d="M3 7l9 6 9-6v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z" />
+                  <path d="M3 7l9 6 9-6-9-5-9 5Z" opacity="0.6" />
+                </svg>
+              </div>
+              {data.integrations.gmail && (
+                <div className="absolute -right-0.5 -top-0.5 h-2 w-2 rounded-full border border-white bg-green-500"></div>
+              )}
+            </Link>
+
+            {/* Google Meet - Orange */}
+            <Link
+              href={data.integrations.meet ? "/chat" : "/api/integrations/google/meet/start"}
+              className="group relative z-30 -ml-2.5 flex h-8 w-8 items-center justify-center rounded-full transition hover:scale-110"
+              title={data.integrations.meet ? "Google Meet - Connected" : "Google Meet - Not connected"}
+            >
+              <div className={`flex h-8 w-8 items-center justify-center rounded-full ${data.integrations.meet ? "bg-[#f97316]" : "bg-gray-300"}`}>
+                <svg viewBox="0 0 24 24" className="h-4 w-4 text-white" fill="currentColor" aria-hidden="true">
+                  <path d="M5 6h8l4 4v8H5z" />
+                  <path d="M17 10v5l3 2v-9z" opacity="0.6" />
+                </svg>
+              </div>
+              {data.integrations.meet && (
+                <div className="absolute -right-0.5 -top-0.5 h-2 w-2 rounded-full border border-white bg-green-500"></div>
+              )}
+            </Link>
+          </div>
         </div>
       </div>
 

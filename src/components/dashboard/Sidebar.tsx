@@ -47,22 +47,22 @@ const navItems = [
       </svg>
     ),
   },
-  {
-    href: "/plan",
-    label: "Plan",
-    icon: (
-      <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden="true">
-        <path
-          d="M7 4h10v4H7zM5 8h14v12H5z"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          fill="none"
-        />
-      </svg>
-    ),
-  },
+  // {
+  //   href: "/plan",
+  //   label: "Plan",
+  //   icon: (
+  //     <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden="true">
+  //       <path
+  //         d="M7 4h10v4H7zM5 8h14v12H5z"
+  //         stroke="currentColor"
+  //         strokeWidth="2"
+  //         strokeLinecap="round"
+  //         strokeLinejoin="round"
+  //         fill="none"
+  //       />
+  //     </svg>
+  //   ),
+  // },
   {
     href: "/goals",
     label: "Goals",

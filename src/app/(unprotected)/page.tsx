@@ -20,10 +20,10 @@ export default async function Home() {
           {/* <PainPoints /> */}
           <Features />
           <Integrations />
-          <Testimonials />
+          {/* <Testimonials />
           <Pricing />
-          <FAQ />
-          <CTA />
+          <FAQ /> */}
+          {/* <CTA /> */}
         </main>
         <Footer />
       </div>

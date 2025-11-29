@@ -13,9 +13,6 @@ export default function Footer() {
           <Link href="#" className="hover:text-black">
             Terms
           </Link>
-          <Link href="#" className="hover:text-black">
-            Contact
-          </Link>
         </div>
       </div>
     </footer>

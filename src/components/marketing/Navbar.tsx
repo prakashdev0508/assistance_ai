@@ -21,15 +21,15 @@ export default async function Navbar() {
 
           {/* Center: Nav links */}
           <div className="hidden flex-1 items-center justify-center gap-8 md:flex">
-            <Link href="#about" className="text-sm font-medium text-black hover:text-black/80">
+            {/* <Link href="#about" className="text-sm font-medium text-black hover:text-black/80">
               About
-            </Link>
-            <Link href="#solution" className="text-sm font-medium text-black hover:text-black/80">
+            </Link> */}
+            {/* <Link href="#solution" className="text-sm font-medium text-black hover:text-black/80">
               Solution
-            </Link>
-            <Link href="#pricing" className="text-sm font-medium text-black hover:text-black/80">
+            </Link> */}
+            {/* <Link href="#pricing" className="text-sm font-medium text-black hover:text-black/80">
               Pricing
-            </Link>
+            </Link> */}
           </div>
 
           {/* Right: CTA */}
