@@ -226,7 +226,7 @@ export default function ChatInterface() {
               <div className="flex h-full items-center justify-center">
                 <div className="text-center max-w-md">
                   <div className="mb-4 flex justify-center">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-gray-100 to-gray-200 border border-gray-300/50">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-linear-to-br from-gray-100 to-gray-200 border border-gray-300/50">
                       <svg
                         viewBox="0 0 24 24"
                         className="h-6 w-6 text-gray-600"
@@ -258,7 +258,7 @@ export default function ChatInterface() {
                   }`}
               >
                 {message.role === "assistant" && (
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-gray-100 to-gray-200 border border-gray-300/50">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-gray-100 to-gray-200 border border-gray-300/50">
                     <svg
                       viewBox="0 0 24 24"
                       className="h-4.5 w-4.5 text-gray-700"
@@ -373,7 +373,7 @@ export default function ChatInterface() {
             ))}
             {isLoading && (
               <div className="flex gap-4 justify-start">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-gray-100 to-gray-200 border border-gray-300/50">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-gray-100 to-gray-200 border border-gray-300/50">
                   <svg
                     viewBox="0 0 24 24"
                     className="h-4.5 w-4.5 text-gray-700"

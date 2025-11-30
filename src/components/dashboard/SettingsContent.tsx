@@ -1,8 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 export default function SettingsContent() {
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [notifications, setNotifications] = useState({
     email: true,
     push: false,
@@ -18,6 +21,212 @@ export default function SettingsContent() {
     emailSignature: "",
   });
 
+  const [originalData, setOriginalData] = useState({
+    profile: { ...profileData },
+    notifications: { ...notifications },
+  });
+
+  // Fetch settings on mount
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch("/api/settings");
+        
+        if (!response.ok) {
+          throw new Error("Failed to fetch settings");
+        }
+
+        const data = (await response.json()) as {
+          profile: {
+            firstName: string;
+            lastName: string;
+            email: string;
+            bio: string;
+            emailSignature: string;
+          };
+          notifications: {
+            email: boolean;
+            push: boolean;
+            sms: boolean;
+            marketing: boolean;
+          };
+        };
+        
+        setProfileData({
+          firstName: data.profile.firstName ?? "",
+          lastName: data.profile.lastName ?? "",
+          email: data.profile.email ?? "",
+          bio: data.profile.bio ?? "",
+          emailSignature: data.profile.emailSignature ?? "",
+        });
+
+        setNotifications({
+          email: data.notifications.email ?? true,
+          push: data.notifications.push ?? false,
+          sms: data.notifications.sms ?? false,
+          marketing: data.notifications.marketing ?? false,
+        });
+
+        setOriginalData({
+          profile: {
+            firstName: data.profile.firstName ?? "",
+            lastName: data.profile.lastName ?? "",
+            email: data.profile.email ?? "",
+            bio: data.profile.bio ?? "",
+            emailSignature: data.profile.emailSignature ?? "",
+          },
+          notifications: {
+            email: data.notifications.email ?? true,
+            push: data.notifications.push ?? false,
+            sms: data.notifications.sms ?? false,
+            marketing: data.notifications.marketing ?? false,
+          },
+        });
+      } catch (error) {
+        console.error("Failed to fetch settings:", error);
+        setMessage({
+          type: "error",
+          text: "Failed to load settings. Please refresh the page.",
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    void fetchSettings();
+  }, []);
+
+  // Auto-save notifications when changed
+  useEffect(() => {
+    if (loading) return; // Don't save on initial load
+
+    const saveNotifications = async () => {
+      try {
+        const response = await fetch("/api/settings", {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            notifications,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to save notification preferences");
+        }
+
+        const data = (await response.json()) as {
+          notifications: {
+            email: boolean;
+            push: boolean;
+            sms: boolean;
+            marketing: boolean;
+          };
+        };
+        setOriginalData((prev) => ({
+          ...prev,
+          notifications: data.notifications,
+        }));
+      } catch (error) {
+        console.error("Failed to save notifications:", error);
+        setMessage({
+          type: "error",
+          text: "Failed to save notification preferences.",
+        });
+      }
+    };
+
+    // Debounce the save
+    const timeoutId = setTimeout(() => {
+      void saveNotifications();
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+  }, [notifications, loading]);
+
+  const handleSaveProfile = async () => {
+    try {
+      setSaving(true);
+      setMessage(null);
+
+      const response = await fetch("/api/settings", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          profile: profileData,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = (await response.json()) as { error?: string };
+        throw new Error(errorData.error ?? "Failed to save profile");
+      }
+
+      const data = (await response.json()) as {
+        profile: {
+          firstName: string;
+          lastName: string;
+          email: string;
+          bio: string;
+          emailSignature: string;
+        };
+      };
+      
+      setOriginalData((prev) => ({
+        ...prev,
+        profile: data.profile,
+      }));
+
+      setMessage({
+        type: "success",
+        text: "Profile updated successfully!",
+      });
+
+      // Clear message after 3 seconds
+      setTimeout(() => {
+        setMessage(null);
+      }, 3000);
+    } catch (error) {
+      console.error("Failed to save profile:", error);
+      setMessage({
+        type: "error",
+        text: error instanceof Error ? error.message : "Failed to save profile.",
+      });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleCancel = () => {
+    setProfileData(originalData.profile);
+    setMessage(null);
+  };
+
+  const hasChanges = JSON.stringify(profileData) !== JSON.stringify(originalData.profile);
+
+  if (loading) {
+    return (
+      <div className="mx-auto max-w-5xl">
+        <div className="mb-10">
+          <h1 className="text-4xl font-bold tracking-tight text-black">Settings</h1>
+          <p className="mt-3 text-base text-black/60">
+            Manage your account settings and preferences
+          </p>
+        </div>
+        <div className="flex items-center justify-center py-20">
+          <div className="text-center">
+            <div className="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-black/10 border-t-black"></div>
+            <p className="mt-4 text-sm text-black/60">Loading settings...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="mx-auto max-w-5xl">
       {/* Header */}
@@ -27,6 +236,29 @@ export default function SettingsContent() {
           Manage your account settings and preferences
         </p>
       </div>
+
+      {/* Message Banner */}
+      {message && (
+        <div
+          className={`mb-6 rounded-lg border px-4 py-3 ${
+            message.type === "success"
+              ? "border-green-200 bg-green-50 text-green-800"
+              : "border-red-200 bg-red-50 text-red-800"
+          }`}
+        >
+          <div className="flex items-center justify-between">
+            <p className="text-sm font-medium">{message.text}</p>
+            <button
+              onClick={() => setMessage(null)}
+              className="ml-4 text-black/40 hover:text-black/60"
+            >
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="space-y-8">
         {/* Profile Section */}
@@ -60,13 +292,22 @@ export default function SettingsContent() {
                   JPG, PNG or GIF. Max size 2MB. Recommended: 400x400px
                 </p>
                 <div className="mt-4 flex gap-3">
-                  <button className="rounded-lg border border-black/10 bg-white px-4 py-2 text-sm font-medium text-black/70 hover:bg-black/5 hover:text-black transition-colors">
+                  <button 
+                    disabled
+                    className="rounded-lg border border-black/10 bg-white px-4 py-2 text-sm font-medium text-black/40 cursor-not-allowed"
+                  >
                     Upload Photo
                   </button>
-                  <button className="rounded-lg border border-black/10 bg-white px-4 py-2 text-sm font-medium text-black/70 hover:bg-black/5 hover:text-black transition-colors">
+                  <button 
+                    disabled
+                    className="rounded-lg border border-black/10 bg-white px-4 py-2 text-sm font-medium text-black/40 cursor-not-allowed"
+                  >
                     Remove
                   </button>
                 </div>
+                <p className="mt-2 text-xs text-black/40 italic">
+                  Photo upload will be available soon
+                </p>
               </div>
             </div>
 
@@ -160,11 +401,25 @@ export default function SettingsContent() {
               </div>
 
               <div className="flex justify-end gap-3 pt-2">
-                <button className="rounded-lg border border-black/10 bg-white px-5 py-2.5 text-sm font-medium text-black/70 hover:bg-black/5 transition-colors">
+                <button
+                  onClick={handleCancel}
+                  disabled={!hasChanges || saving}
+                  className="rounded-lg border border-black/10 bg-white px-5 py-2.5 text-sm font-medium text-black/70 hover:bg-black/5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
                   Cancel
                 </button>
-                <button className="rounded-lg bg-black px-5 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-black/90 transition-colors">
-                  Save Changes
+                <button
+                  onClick={handleSaveProfile}
+                  disabled={!hasChanges || saving}
+                  className="rounded-lg bg-black px-5 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-black/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                >
+                  {saving && (
+                    <svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                    </svg>
+                  )}
+                  {saving ? "Saving..." : "Save Changes"}
                 </button>
               </div>
             </div>
@@ -224,7 +479,7 @@ export default function SettingsContent() {
                   </svg>
                 ),
               },
-            ].map((item, index) => (
+            ].map((item) => (
               <div
                 key={item.key}
                 className="flex items-center justify-between px-6 py-5 transition-colors hover:bg-black/1"
@@ -256,6 +511,11 @@ export default function SettingsContent() {
                 </label>
               </div>
             ))}
+          </div>
+          <div className="border-t border-black/5 bg-black/1 px-6 py-4">
+            <p className="text-xs text-black/50">
+              Notification preferences are saved automatically
+            </p>
           </div>
         </section>
       </div>

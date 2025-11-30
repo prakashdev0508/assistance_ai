@@ -6,6 +6,7 @@ import {
   fetchGoogleGmailThreads,
   sendGoogleGmailMessage,
 } from "~/server/integrations/googleGmail";
+import { db } from "~/server/db";
 
 export function createGmailTools(userId: number) {
   const listGmailMessages = tool(
@@ -339,10 +340,54 @@ export function createGmailTools(userId: number) {
     },
   );
 
+  const getUserEmailSignature = tool(
+    async () => {
+      try {
+        const user = await db.user.findUnique({
+          where: { id: userId },
+          select: {
+            name: true,
+            emailSignature: true,
+          },
+        });
+
+        if (!user) {
+          return JSON.stringify({
+            error: "User not found",
+            signature: null,
+            name: null,
+          });
+        }
+
+        return JSON.stringify(
+          {
+            signature: user.emailSignature ?? null,
+            name: user.name,
+            hasSignature: !!user.emailSignature,
+            message: user.emailSignature
+              ? "User has a custom email signature saved."
+              : "No custom email signature found. Will use user's name as signature.",
+          },
+          null,
+          2,
+        );
+      } catch (error) {
+        return `Error fetching user email signature: ${error instanceof Error ? error.message : "Unknown error"}`;
+      }
+    },
+    {
+      name: "get_user_email_signature",
+      description:
+        "Retrieves the user's email signature and name from their account settings. This is CRITICAL to call before sending any email to ensure the email includes the proper signature. Returns the saved email signature if available, or the user's name as a fallback. Always call this tool before composing or sending emails to get the correct signature to include.",
+      schema: z.object({}),
+    },
+  );
+
   return [
     listGmailMessages,
     getGmailMessage,
     listGmailThreads,
+    getUserEmailSignature,
     sendGmailReply,
     sendGmailEmail,
   ];

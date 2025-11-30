@@ -239,6 +239,32 @@ export async function sendGoogleGmailMessage(
 ) {
   const accessToken = await getValidGoogleGmailAccessToken(userId);
 
+  // Fetch user's email signature and name from database
+  const user = await db.user.findUnique({
+    where: { id: userId },
+    select: {
+      name: true,
+      emailSignature: true,
+    },
+  });
+
+  // Prepare email signature
+  let signature = "";
+  if (user?.emailSignature?.trim()) {
+    // Use the saved email signature
+    signature = user.emailSignature.trim();
+  } else if (user?.name) {
+    // Fallback to user's name if no signature is set
+    signature = user.name;
+  }
+
+  // Append signature to email body if it exists
+  let emailBody = message.body;
+  if (signature) {
+    // Add a separator before the signature (two line breaks)
+    emailBody = `${message.body}<br><br>${signature.replace(/\n/g, "<br>")}`;
+  }
+
   // Build email message in RFC 2822 format
   const emailLines: string[] = [];
   emailLines.push(`To: ${message.to}`);
@@ -253,7 +279,7 @@ export async function sendGoogleGmailMessage(
   }
   emailLines.push("Content-Type: text/html; charset=utf-8");
   emailLines.push("");
-  emailLines.push(message.body);
+  emailLines.push(emailBody);
 
   const rawMessage = emailLines.join("\r\n");
 

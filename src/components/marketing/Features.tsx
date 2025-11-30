@@ -30,7 +30,7 @@ export default function Features() {
               </div>
               <div className="space-y-2">
                 <div className="flex gap-2">
-                  <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-500"></div>
+                  <div className="h-8 w-8 rounded-full bg-linear-to-br from-blue-500 to-purple-500"></div>
                   <div className="flex-1 space-y-2">
                     <div className="h-3 w-3/4 rounded bg-black/10"></div>
                     <div className="h-3 w-1/2 rounded bg-black/10"></div>
