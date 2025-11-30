@@ -16,6 +16,7 @@ export const config = {
     "/plan/:path*",
     "/integrations/:path*",
     "/goals/:path*",
+    "/settings/:path*",
   ],
 };
 

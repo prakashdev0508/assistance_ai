@@ -1,6 +1,7 @@
 import { HydrateClient } from "~/trpc/server";
 import Navbar from "~/components/marketing/Navbar";
 import Hero from "~/components/marketing/Hero";
+import DashboardImage from "~/components/marketing/DashboardImage";
 // import PainPoints from "~/components/marketing/PainPoints";
 import Features from "~/components/marketing/Features";
 import Integrations from "~/components/marketing/Integrations";
@@ -17,6 +18,7 @@ export default async function Home() {
         <Navbar />
         <main>
           <Hero />
+          <DashboardImage />
           {/* <PainPoints /> */}
           <Features />
           <Integrations />

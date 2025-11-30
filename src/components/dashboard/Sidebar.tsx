@@ -144,16 +144,24 @@ export default function Sidebar() {
         </nav>
       </div>
       <div className="flex flex-col items-center gap-4">
-        <button className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white text-black/60 hover:bg-black/5 hover:text-black/80">
-          <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden="true">
-            <path
-              d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm7 0a7 7 0 0 1-14 0"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-          </svg>
-        </button>
+        <div className="group relative">
+          <Link
+            href="/settings"
+            className={`flex h-10 w-10 items-center justify-center rounded-2xl transition ${pathname === "/settings"
+                ? "bg-black text-white shadow-[0_12px_30px_-12px_rgba(0,0,0,0.3)]"
+                : "bg-white text-black/60 hover:bg-black/5 hover:text-black/80"
+              }`}
+            aria-label="Settings"
+          >
+            <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+          </Link>
+          <span className="pointer-events-none absolute left-[60px] top-1/2 -translate-y-1/2 rounded-full bg-black px-3 py-1 text-xs font-medium text-white opacity-0 shadow group-hover:opacity-100">
+            Settings
+          </span>
+        </div>
         <div className="group relative">
           <button
             onClick={handleLogout}
