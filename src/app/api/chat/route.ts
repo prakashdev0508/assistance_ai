@@ -10,6 +10,7 @@ import { createMeetTools } from "~/server/tools/meetTools";
 import { createDateTools } from "~/server/tools/dateTools";
 import { createTaskTools } from "~/server/tools/taskTools";
 import { createGoalTools } from "~/server/tools/goalTools";
+import { createJournalTools } from "~/server/tools/journalTools";
 import { SYSTEM_PROMPT } from "~/server/prompts";
 import { env } from "~/env";
 import { randomUUID } from "crypto";
@@ -92,14 +93,15 @@ export async function POST(request: NextRequest) {
       apiKey: env.OPENAI_API_KEY,
     });
 
-    // Create tools for Calendar, Gmail, Meet, Date, Tasks, and Goals
+    // Create tools for Calendar, Gmail, Meet, Date, Tasks, Goals, and Journal
     const calendarTools = createCalendarTools(user.id);
     const gmailTools = createGmailTools(user.id);
     const meetTools = createMeetTools(user.id);
     const dateTools = createDateTools();
     const taskTools = createTaskTools(user.id);
     const goalTools = createGoalTools(user.id);
-    const allTools = [...calendarTools, ...gmailTools, ...meetTools, ...dateTools, ...taskTools, ...goalTools];
+    const journalTools = createJournalTools(user.id);
+    const allTools = [...calendarTools, ...gmailTools, ...meetTools, ...dateTools, ...taskTools, ...goalTools, ...journalTools];
 
     // Create agent with tools
     const agent = createAgent({
