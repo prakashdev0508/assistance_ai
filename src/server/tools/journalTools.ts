@@ -516,7 +516,7 @@ export function createJournalTools(userId: number) {
         const moodCounts: Record<string, number> = {};
         entries.forEach((entry) => {
           if (entry.mood) {
-            moodCounts[entry.mood] = (moodCounts[entry.mood] || 0) + 1;
+            moodCounts[entry.mood] = (moodCounts[entry.mood] ?? 0) + 1;
           }
         });
 
@@ -524,7 +524,7 @@ export function createJournalTools(userId: number) {
         const tagCounts: Record<string, number> = {};
         entries.forEach((entry) => {
           entry.tags.forEach((tag) => {
-            tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+            tagCounts[tag] = (tagCounts[tag] ?? 0) + 1;
           });
         });
 
