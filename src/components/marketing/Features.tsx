@@ -9,7 +9,7 @@ const features = [
         <path d="M15.39 4.39a1 1 0 0 0 1.68-.474 2.5 2.5 0 1 1 3.014 3.015 1 1 0 0 0-.474 1.68l1.683 1.682a2.414 2.414 0 0 1 0 3.414L19.61 15.39a1 1 0 0 1-1.68-.474 2.5 2.5 0 1 0-3.014 3.015 1 1 0 0 1 .474 1.68l-1.683 1.682a2.414 2.414 0 0 1-3.414 0L8.61 19.61a1 1 0 0 0-1.68.474 2.5 2.5 0 1 1-3.014-3.015 1 1 0 0 0 .474-1.68l-1.683-1.682a2.414 2.414 0 0 1 0-3.414L4.39 8.61a1 1 0 0 1 1.68.474 2.5 2.5 0 1 0 3.014-3.015 1 1 0 0 1-.474-1.68l1.683-1.682a2.414 2.414 0 0 1 3.414 0z"></path>
       </svg>
     ),
-    color: "blue",
+    hoverBg: "bg-blue-500/5",
     span: "md:col-span-2"
   },
   {
@@ -22,7 +22,7 @@ const features = [
         <path d="M19 21V3"></path>
       </svg>
     ),
-    color: "emerald",
+    hoverBg: "bg-emerald-500/5",
     span: "md:col-span-1"
   },
   {
@@ -33,7 +33,7 @@ const features = [
         <path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path>
       </svg>
     ),
-    color: "amber",
+    hoverBg: "bg-amber-500/5",
     span: "md:col-span-1"
   },
   {
@@ -45,7 +45,7 @@ const features = [
         <path d="m9 12 2 2 4-4"></path>
       </svg>
     ),
-    color: "purple",
+    hoverBg: "bg-purple-500/5",
     span: "md:col-span-2"
   }
 ];
@@ -68,9 +68,9 @@ export default function Features() {
           {features.map((feature, index) => (
             <div
               key={index}
-              className={`group relative overflow-hidden rounded-2xl border border-border bg-background p-8 hover:border-foreground/20 transition-colors ${feature.span}`}
+              className={`group relative overflow-hidden rounded-2xl border border-border bg-background p-8 hover:border-foreground/20 transition-all duration-300 hover:shadow-lg ${feature.span}`}
             >
-              <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-${feature.color}-500/5`}></div>
+              <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${feature.hoverBg}`}></div>
               <div className="relative z-10">
                 <div className="w-12 h-12 rounded-lg border border-border bg-background/50 flex items-center justify-center mb-6 shadow-sm group-hover:scale-110 transition-transform duration-300">
                   {feature.icon}

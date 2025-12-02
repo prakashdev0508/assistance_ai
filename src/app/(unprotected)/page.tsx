@@ -19,14 +19,15 @@ export default async function Home() {
           <div className="border-y border-border/50 bg-muted/30 py-10 overflow-hidden">
             <div className="container mx-auto px-6">
               <p className="text-center text-sm font-mono text-muted-foreground mb-8 uppercase tracking-widest">
-                Trusted by innovative teams
+                Available Integrations Apps
               </p>
               <div className="flex justify-center gap-12 md:gap-24 opacity-50 grayscale items-center flex-wrap">
-                <span className="text-xl font-bold">ACME Corp</span>
-                <span className="text-xl font-bold">GlobalBank</span>
-                <span className="text-xl font-bold">NEXUS</span>
-                <span className="text-xl font-bold">Starlight</span>
-                <span className="text-xl font-bold">Vertex</span>
+                <span className="text-xl font-bold">Google Calendar</span>
+                <span className="text-xl font-bold">Google Gmail</span>
+                <span className="text-xl font-bold">Google Meet</span>
+                <span className="text-xl font-bold">Tasks & Goals</span>
+                {/* <span className="text-xl font-bold">Starlight</span>
+                <span className="text-xl font-bold">Vertex</span> */}
               </div>
             </div>
           </div>
