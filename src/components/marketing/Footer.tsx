@@ -3,16 +3,22 @@ import React from "react";
 
 export default function Footer() {
   return (
-    <footer className="border-t border-black/5 bg-white">
-      <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-6 py-10 text-sm text-black/60 md:flex-row">
-        <p>© {new Date().getFullYear()} myassistant. All rights reserved.</p>
-        <div className="flex items-center gap-4">
-          <Link href="/privacy" className="hover:text-black">
+    <footer className="py-12 border-t border-border bg-muted/20">
+      <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6 text-sm text-muted-foreground">
+        <div>© {new Date().getFullYear()} Assistance AI Inc.</div>
+        <div className="flex gap-8">
+          <Link href="/privacy" className="hover:text-foreground transition-colors">
             Privacy
           </Link>
-          <Link href="/terms" className="hover:text-black">
+          <Link href="/terms" className="hover:text-foreground transition-colors">
             Terms
           </Link>
+          <a href="#" className="hover:text-foreground transition-colors">
+            Twitter
+          </a>
+          <a href="#" className="hover:text-foreground transition-colors">
+            GitHub
+          </a>
         </div>
       </div>
     </footer>
