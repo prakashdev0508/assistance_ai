@@ -20,20 +20,20 @@ export default async function Navbar() {
               <path d="M9 13v2"></path>
             </svg>
           </div>
-          Assistance AI
+          MyAssistant
         </Link>
 
         {/* Center: Nav links */}
-        <div className="hidden md:flex items-center gap-6 text-sm font-medium text-muted-foreground">
-          <a href="#features" className="hover:text-foreground transition-colors">
+        <div className="hidden md:flex items-center gap-6 text-sm font-medium text-muted-foreground mx-12">
+          <Link href="/#features" className="hover:text-foreground transition-colors">
             Features
-          </a>
-          <a href="#customers" className="hover:text-foreground transition-colors">
+          </Link>
+          <Link href="/#testimonials" className="hover:text-foreground transition-colors">
             Customers
-          </a>
-          <a href="#pricing" className="hover:text-foreground transition-colors">
+          </Link>
+          <Link href="/pricing" className="hover:text-foreground transition-colors">
             Pricing
-          </a>
+          </Link>
         </div>
 
         {/* Right: CTA */}
