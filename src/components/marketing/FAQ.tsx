@@ -1,55 +1,74 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 
 const faqs = [
   {
-    q: "How does the assistant plan my day?",
-    a: "It considers deadlines, priorities, habits, and energy levels to schedule tasks and breaks intelligently.",
+    question: "How does Assistance AI connect to my apps?",
+    answer: "We use secure OAuth connections and official APIs to integrate with your tools. You can connect or disconnect apps anytime from your dashboard. All data is encrypted in transit and at rest."
   },
   {
-    q: "Is this mobile-responsive?",
-    a: "Yes. The marketing site and app UI are responsive and optimized for all major devices.",
+    question: "Is my data secure?",
+    answer: "Absolutely. We're SOC2 Type II certified and use end-to-end encryption for all your data. Your information is never shared with third parties, and you maintain full control over what apps we can access."
   },
   {
-    q: "What about privacy?",
-    a: "Your data is encrypted in transit and at rest. You control what’s stored and can delete it anytime.",
+    question: "Can I build custom workflows?",
+    answer: "Yes! Our advanced workflow builder lets you create multi-step automations across all your connected apps. Use our natural language interface to describe what you want, and we'll help build it."
   },
   {
-    q: "Can it connect to my email and calendar?",
-    a: "Yes. It can read availability, propose times, draft emails, and set reminders with your permission.",
+    question: "Do you offer enterprise support?",
+    answer: "Yes, we provide dedicated enterprise support with SLA guarantees, priority response times, and a dedicated customer success manager for Enterprise plans."
   },
   {
-    q: "Does it remember things long-term?",
-    a: "Yes. With long-term memory, it recalls facts, preferences, and routines to personalize suggestions.",
-  },
-  {
-    q: "Can I export my data?",
-    a: "You can export tasks, schedules, and memories in standard formats at any time.",
-  },
+    question: "Is there a free trial available?",
+    answer: "Yes! We offer a 14-day free trial with full access to all features. No credit card required to start."
+  }
 ];
 
 export default function FAQ() {
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+
   return (
-    <section id="faq" className="bg-white py-16 md:py-24 scroll-mt-24">
-      <div className="mx-auto max-w-7xl px-6">
-        <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-balance text-3xl font-semibold tracking-tight md:text-4xl">
-            FAQ
+    <section id="faq" className="py-24">
+      <div className="container mx-auto px-6 max-w-3xl">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">
+            Frequently Asked Questions
           </h2>
-          <p className="mt-3 text-base text-black/70">
-            Answers to common questions about your personal AI assistant.
+          <p className="text-lg text-muted-foreground">
+            Everything you need to know about the product and billing.
           </p>
         </div>
-        <div className="mx-auto mt-10 max-w-3xl space-y-6 md:mt-14">
-          {faqs.map((item) => (
-            <details
-              key={item.q}
-              className="group rounded-2xl border border-black/10 bg-white p-6 shadow-[0_10px_40px_-20px_rgba(0,0,0,0.5)]"
-            >
-              <summary className="cursor-pointer list-none text-base font-semibold">
-                {item.q}
-              </summary>
-              <p className="mt-2 text-sm leading-6 text-black/70">{item.a}</p>
-            </details>
+        
+        <div className="w-full">
+          {faqs.map((faq, index) => (
+            <div key={index} className="border-b border-border">
+              <button
+                onClick={() => setOpenIndex(openIndex === index ? null : index)}
+                className="flex flex-1 items-center justify-between text-left text-lg font-medium py-6 hover:text-primary transition-colors w-full"
+              >
+                {faq.question}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200 ${openIndex === index ? 'rotate-180' : ''}`}
+                >
+                  <path d="m6 9 6 6 6-6"></path>
+                </svg>
+              </button>
+              {openIndex === index && (
+                <div className="pb-6 text-muted-foreground">
+                  {faq.answer}
+                </div>
+              )}
+            </div>
           ))}
         </div>
       </div>

@@ -6,48 +6,64 @@ import { authOptions } from "~/lib/auth";
 export default async function Navbar() {
   const session = await getServerSession(authOptions);
   return (
-    <header className="sticky top-4 z-50 w-full">
-      <div className="mx-auto max-w-6xl rounded-full border border-black/5 bg-white/80 px-4 py-2 shadow-[0_30px_80px_-40px_rgba(0,0,0,0.6)] backdrop-blur-md ring-1 ring-black/5">
-        <nav aria-label="Primary" className="flex items-center gap-4">
-          {/* Left: Logo */}
-          <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[linear-gradient(180deg,#2d6bff_0%,#1048ff_100%)] text-white shadow-[0_10px_30px_-10px_rgba(16,72,255,0.6)]">
-              <span className="text-base font-semibold">M</span>
-            </div>
-            <Link href="/" className="text-base font-semibold">
-              MyAssistant
+    <div className="fixed top-4 left-0 right-0 flex justify-center z-50 px-4">
+      <nav className="glass-panel rounded-full px-6 py-3 flex items-center gap-8 shadow-lg shadow-black/5">
+        {/* Logo */}
+        <Link href="/" className="flex items-center gap-2 text-lg font-bold tracking-tight hover:opacity-80 transition-opacity">
+          <div className="w-8 h-8 rounded-full bg-foreground text-background flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+              <path d="M12 8V4H8"></path>
+              <rect width="16" height="12" x="4" y="8" rx="2"></rect>
+              <path d="M2 14h2"></path>
+              <path d="M20 14h2"></path>
+              <path d="M15 13v2"></path>
+              <path d="M9 13v2"></path>
+            </svg>
+          </div>
+          Assistance AI
+        </Link>
+
+        {/* Center: Nav links */}
+        <div className="hidden md:flex items-center gap-6 text-sm font-medium text-muted-foreground">
+          <a href="#features" className="hover:text-foreground transition-colors">
+            Features
+          </a>
+          <a href="#customers" className="hover:text-foreground transition-colors">
+            Customers
+          </a>
+          <a href="#pricing" className="hover:text-foreground transition-colors">
+            Pricing
+          </a>
+        </div>
+
+        {/* Right: CTA */}
+        <div className="flex items-center gap-3">
+          {session ? (
+            <Link 
+              href="/dashboard" 
+              className="text-sm font-medium hover:text-foreground/80 transition-colors"
+            >
+              Dashboard
             </Link>
-          </div>
-
-          {/* Center: Nav links */}
-          <div className="hidden flex-1 items-center justify-center gap-8 md:flex">
-            {/* <Link href="#about" className="text-sm font-medium text-black hover:text-black/80">
-              About
-            </Link> */}
-            {/* <Link href="#solution" className="text-sm font-medium text-black hover:text-black/80">
-              Solution
-            </Link> */}
-            {/* <Link href="#pricing" className="text-sm font-medium text-black hover:text-black/80">
-              Pricing
-            </Link> */}
-          </div>
-
-          {/* Right: CTA */}
-          <div className="ml-auto flex items-center">
-            {session ? (
-              <Link href="/dashboard" className=" text-sm font-medium text-black/90 hover:text-black/80 hover:underline underline-offset-2 ">Dashboard <span className=" " >&rarr;</span></Link>
-            ) : (
+          ) : (
+            <>
+              <Link 
+                href="/login" 
+                className="text-sm font-medium hover:text-foreground/80 transition-colors hidden sm:block"
+              >
+                Log in
+              </Link>
               <Link
                 href="/login"
-                className="rounded-full bg-[linear-gradient(180deg,#1e90ff_0%,#1068ff_100%)] px-4 py-2 text-sm font-semibold text-white shadow-[0_18px_50px_-18px_rgba(16,104,255,0.9)] ring-1 ring-blue-500/40 hover:brightness-110"
+                className="inline-flex items-center justify-center gap-2 whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring bg-primary text-primary-foreground border border-primary-border min-h-8 text-xs rounded-full px-4 h-9 font-medium hover:bg-primary/90"
               >
-                Sign in
+                Get Started
               </Link>
-            )}
-          </div>
-        </nav>
-      </div>
-    </header>
+            </>
+          )}
+        </div>
+      </nav>
+    </div>
   );
 }
 

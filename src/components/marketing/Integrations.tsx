@@ -44,7 +44,7 @@ const integrations = [
 
 export default function Integrations() {
   return (
-    <section id="integrations" className="bg-white py-12 md:py-16 border-b border-black/5">
+    <section id="integrations" className="bg-[#f5f5f5] py-12 md:py-16 border-b border-black/5">
       <div className="mx-auto max-w-7xl px-6">
         <div className="text-center">
           <h2 className="text-base md:text-lg font-medium text-black/60 mb-10 md:mb-12">

@@ -1,56 +1,113 @@
+"use client";
+
 import Link from "next/link";
 import React from "react";
 
 export default function Hero() {
   return (
-    <section id="about" className="relative scroll-mt-24">
-      <div className="pointer-events-none absolute inset-0 grid-bg grid-fade-bottom-lg" />
-      <div className="mx-auto max-w-7xl px-6 pb-20 pt-16 md:pt-24">
-        <div className="mx-auto max-w-3xl text-center">
-          <div className="mb-6 flex items-center justify-center">
-            <div className="inline-flex items-center gap-3 rounded-full border border-black/10 bg-white px-2 py-1 pr-2 text-xs text-black/80 shadow-[0_10px_40px_-20px_rgba(0,0,0,0.5)]">
-              <div className="flex -space-x-2">
-                <span className="h-6 w-6 rounded-full bg-linear-to-br from-purple-500 to-pink-500 ring-2 ring-white" />
-                <span className="h-6 w-6 rounded-full bg-linear-to-br from-blue-500 to-cyan-500 ring-2 ring-white" />
-                <span className="h-6 w-6 rounded-full bg-linear-to-br from-amber-400 to-orange-500 ring-2 ring-white" />
-              </div>
-              <span className="pl-1 pr-2 text-black/70">Join 3k+ members</span>
-              <Link
-                href="#"
-                className="inline-flex items-center gap-1 rounded-full bg-[linear-gradient(180deg,#ffd84d_0%,#ffc738_100%)] px-3 py-1 font-medium text-black hover:brightness-105"
-              >
-                Join Waitlist
-                <svg width="16" height="16" viewBox="0 0 24 24" className="opacity-80">
-                  <path d="M5 12h12m-5-5l5 5-5 5" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" />
-                </svg>
-              </Link>
-            </div>
+    <section className="relative pt-40 pb-20 md:pt-52 md:pb-32 overflow-hidden">
+      <div className="container mx-auto px-6 relative z-10">
+        <div className="flex flex-col items-center text-center max-w-4xl mx-auto">
+          {/* Announcement Badge */}
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-muted border border-border text-xs font-medium text-muted-foreground mb-8">
+            <span className="flex h-2 w-2 rounded-full bg-emerald-500"></span>
+            v2.0 is now available
+            <span className="mx-1 text-border">|</span>
+            <span className="text-foreground flex items-center gap-1">
+              Read the changelog
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3 h-3">
+                <path d="M5 12h14"></path>
+                <path d="m12 5 7 7-7 7"></path>
+              </svg>
+            </span>
           </div>
-          <h1 className="text-balance text-5xl font-extrabold tracking-tight md:text-7xl">
-            Your all-in-one AI life manager
+
+          {/* Main Heading */}
+          <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6 text-balance">
+            Your unified intelligent <br />
+            <span className="text-muted-foreground">workspace.</span>
           </h1>
-          <p className="mt-5 text-pretty text-base text-black/70 md:text-lg">
-            An intelligent personal AI assistant that plans your day, manages your tasks, remembers everything, and automates your life.
+
+          {/* Subheading */}
+          <p className="text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl text-balance">
+            Connect all your apps, tools, and workflows into one seamless chat interface. Stop switching tabs. Start getting things done.
           </p>
-          <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
             <Link
               href="/login"
-              className="w-full rounded-full bg-[linear-gradient(180deg,#1e90ff_0%,#1068ff_100%)] px-6 py-3.5 text-center text-sm font-semibold text-white shadow-[0_18px_50px_-18px_rgba(16,104,255,0.8)] ring-1 ring-blue-500/40 hover:brightness-110 sm:w-auto"
+              className="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring bg-primary text-primary-foreground border border-primary-border min-h-10 h-12 rounded-full px-8 text-base hover:bg-primary/90"
             >
-              Try Now <span className="ml-2 " >&rarr;</span>
+              Start for free
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-2 w-4 h-4">
+                <path d="M5 12h14"></path>
+                <path d="m12 5 7 7-7 7"></path>
+              </svg>
             </Link>
-            <Link
-              href="#solution"
-              className="w-full rounded-full border border-black/10 bg-white px-6 py-3.5 text-center text-sm font-semibold text-black hover:bg-black/5 sm:w-auto"
+            <a
+              href="#documentation"
+              className="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring border border-border min-h-10 h-12 rounded-full px-8 text-base bg-background/50 backdrop-blur-sm hover:bg-muted"
             >
-              See Solution
-            </Link>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 w-4 h-4">
+                <path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3"></path>
+              </svg>
+              View Documentation
+            </a>
           </div>
-          <p className="mt-3 text-xs text-black/50">
-            No credit card required.
-          </p>
+
+          {/* Dashboard Preview with Chat Mockup */}
+          <div className="mt-20 relative w-full max-w-5xl aspect-[16/9] rounded-xl overflow-hidden border border-border/50 shadow-2xl bg-background/50">
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent z-10"></div>
+            <div className="w-full h-full bg-gradient-to-br from-muted/50 to-background/50"></div>
+            
+            {/* Chat Interface Overlay */}
+            <div className="absolute inset-0 flex items-center justify-center z-20">
+              <div className="w-full max-w-2xl bg-background/80 backdrop-blur-md rounded-xl border border-border shadow-2xl overflow-hidden">
+                {/* Browser Chrome */}
+                <div className="h-10 border-b border-border flex items-center px-4 gap-2">
+                  <div className="w-3 h-3 rounded-full bg-red-500/20 border border-red-500/50"></div>
+                  <div className="w-3 h-3 rounded-full bg-yellow-500/20 border border-yellow-500/50"></div>
+                  <div className="w-3 h-3 rounded-full bg-green-500/20 border border-green-500/50"></div>
+                </div>
+                
+                {/* Chat Content */}
+                <div className="p-6 space-y-4">
+                  {/* User Message */}
+                  <div className="flex gap-4">
+                    <div className="w-8 h-8 rounded-full bg-muted flex-shrink-0"></div>
+                    <div className="space-y-2 flex-1">
+                      <div className="h-4 w-1/3 bg-muted rounded"></div>
+                      <div className="h-4 w-2/3 bg-muted/50 rounded"></div>
+                    </div>
+                  </div>
+                  
+                  {/* AI Response */}
+                  <div className="flex gap-4 flex-row-reverse">
+                    <div className="w-8 h-8 rounded-full bg-blue-500 flex-shrink-0 flex items-center justify-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 text-white">
+                        <path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"></path>
+                        <path d="M20 2v4"></path>
+                        <path d="M22 4h-4"></path>
+                        <circle cx="4" cy="20" r="2"></circle>
+                      </svg>
+                    </div>
+                    <div className="space-y-2 flex-1">
+                      <div className="h-20 w-full bg-blue-500/10 border border-blue-500/20 rounded-lg p-3">
+                        <div className="h-3 w-3/4 bg-blue-500/20 rounded mb-2"></div>
+                        <div className="h-3 w-1/2 bg-blue-500/20 rounded"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
+      
+      {/* Background Mesh Gradient */}
+      <div className="absolute top-0 inset-x-0 h-[500px] bg-mesh -z-10 opacity-40 mask-gradient-b"></div>
     </section>
   );
 }

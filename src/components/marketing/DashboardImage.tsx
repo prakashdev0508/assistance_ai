@@ -34,7 +34,7 @@ export default function DashboardImage() {
   }, []);
 
   return (
-    <section className="relative overflow-hidden bg-white py-12 md:-py-20">
+    <section className="relative overflow-hidden bg-[#f5f5f5] py-12 md:-py-20">
       <div className="mx-auto max-w-7xl px-6">
         <div
           ref={imageRef}
