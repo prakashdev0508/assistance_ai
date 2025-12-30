@@ -7,7 +7,7 @@ export default async function Navbar() {
   const session = await getServerSession(authOptions);
   return (
     <div className="fixed top-4 left-0 right-0 flex justify-center z-50 px-4">
-      <nav className="glass-panel rounded-full px-6 py-3 flex items-center gap-8 shadow-lg shadow-black/5">
+      <nav className="rounded-full px-6 py-3 flex items-center gap-8 shadow-lg shadow-black/5 bg-white/80 backdrop-blur-md border border-black/5">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 text-lg font-bold tracking-tight hover:opacity-80 transition-opacity">
           <div className="w-8 h-8 rounded-full bg-foreground text-background flex items-center justify-center">
