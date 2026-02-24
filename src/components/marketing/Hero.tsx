@@ -24,7 +24,7 @@ export default function Hero() {
 
           {/* Main Heading */}
           <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6 text-balance">
-            Your unified intelligent <br />
+            Your intelligent <br />
             <span className="text-muted-foreground">workspace.</span>
           </h1>
 
@@ -73,5 +73,4 @@ export default function Hero() {
     </section>
   );
 }
-
 
